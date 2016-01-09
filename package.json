@@ -22,7 +22,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && babel src --out-dir dist",
+    "build": "npm run lint && npm run test && rm -rf dist && babel src --out-dir dist",
     "test": "mocha --compilers js:babel-register --recursive",
     "lint": "eslint src/ test/",
     "patch": "release patch",
