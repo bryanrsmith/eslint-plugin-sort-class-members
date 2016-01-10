@@ -1,4 +1,5 @@
 [![build status][travis-image]][travis-url]
+[![test coverage][coveralls-image]][coveralls-url]
 
 # eslint-plugin-member-order
 
@@ -54,3 +55,5 @@ Then configure the rules you want to use under the rules section.
 
 [travis-image]: https://img.shields.io/travis/bryanrsmith/eslint-plugin-member-order/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/bryanrsmith/eslint-plugin-member-order
+[coveralls-image]: https://img.shields.io/coveralls/bryanrsmith/eslint-plugin-member-order/master.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/github/bryanrsmith/eslint-plugin-member-order?branch=master
