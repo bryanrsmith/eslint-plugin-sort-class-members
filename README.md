@@ -27,9 +27,9 @@ Add `member-order` to the plugins section of your `.eslintrc` configuration file
 
 ```json
 {
-    "plugins": [
-        "member-order"
-    ]
+	"plugins": [
+		"member-order"
+	]
 }
 ```
 
@@ -37,9 +37,9 @@ Then configure the rules you want to use under the rules section.
 
 ```json
 {
-    "rules": {
-        "member-order": [2, {
-			order: [
+	"rules": {
+		"member-order": [2, {
+			"order": [
 				"[static-properties]",
 				"[static-methods]",
 				"[properties]",
@@ -49,7 +49,7 @@ Then configure the rules you want to use under the rules section.
 				"[conventional-private-methods]"
 			]
 		}]
-    }
+	}
 }
 ```
 
