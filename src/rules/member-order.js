@@ -120,11 +120,29 @@ function expandSlot(input, groups) {
 		return [];
 	}
 
-	let name = slot.name;
-	let nameRegExp = name && name[0] === '/' && new RegExp(name.substr(1, name.length - 2));
-	let testName = n => nameRegExp ? nameRegExp.test(n) : n === name;
+	let testName = slot.name && getNameComparer(slot.name);
 
 	return [{ ...slot, testName }];
+}
+
+function getNameComparer(name) {
+	if (name[0] === '/') {
+		let namePattern = name.substr(1, name.length - 2);
+
+		if (namePattern[0] !== '^') {
+			namePattern = '^' + namePattern;
+		}
+
+		if (namePattern[namePattern.length - 1] !== '$') {
+			namePattern += '$';
+		}
+
+		let re = new RegExp(namePattern);
+
+		return n => re.test(n);
+	}
+
+	return n => n === name;
 }
 
 let defaultOrder = [
