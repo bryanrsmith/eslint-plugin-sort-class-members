@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-member-order",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ESLint rule for enforcing consistent ES6 class member order.",
   "keywords": [
     "eslint",
