@@ -1,21 +1,64 @@
 import eslint from 'eslint';
 import rule from '../../src/rules/member-order';
 
-let ruleTester = new eslint.RuleTester({ parser: 'babel-eslint' });
+let ruleTester = new eslint.RuleTester({ env: { es6: true }});
+
+let regexpOptions = [{
+	order: [
+		'before',
+		'/ab.+/',
+		'after',
+		'[everything-else]',
+	],
+}];
+
+let customGroupOptions = [{
+	order: [
+		'constructor',
+		'[event-handlers]',
+		'[everything-else]',
+	],
+	groups: {
+		'event-handlers': { type: 'method', name: '/on.+/' },
+	},
+}];
+
+let objectOrderOptions = [{
+	order: [
+		{ type: 'method' },
+		{ type: 'property', name: '/_.+' },
+		{ type: 'method', static: true },
+	],
+}];
 
 ruleTester.run('member-order', rule, {
 	valid: [
-		{ code: 'class Foo {}' },
-		{ code: 'class Foo { static beforeCtor(){} constructor(){} }' },
-		{ code: 'class Foo { static beforeCtor(){} constructor(){} afterCtor(){} }' },
-		{ code: 'class Foo { static bar = 1; constructor(){} }' },
-		{ code: 'class Foo { bar = 1; constructor(){} }' },
-		{ code: 'class Foo { constructor(){} afterCtor(){} }' },
-		{ code: 'class Foo { constructor(){} afterCtor(){} other(){} }' },
+		{ code: 'class A {}' },
+		{ code: 'class A { static beforeCtor(){} constructor(){} }' },
+		{ code: 'class A { static beforeCtor(){} constructor(){} afterCtor(){} }' },
+		{ code: 'class A { constructor(){} afterCtor(){} }' },
+		{ code: 'class A { constructor(){} afterCtor(){} other(){} }' },
+		{ code: 'class A { static a; static b(){} c; _d; constructor(){} e(){} }', parser: 'babel-eslint' },
+
+		// class properties should work with babel-eslint
+		{ code: 'class A { static bar = 1; constructor(){} }', parser: 'babel-eslint' },
+		{ code: 'class A { bar = 1; constructor(){} }', parser: 'babel-eslint' },
+
+		// regexp names
+		{ code: 'class A { before(){} abc(){} after(){} }', options: regexpOptions },
+		{ code: 'class A { before(){} abc(){} after(){} xyz(){} }', options: regexpOptions },
+
+		// custom groups
+		{ code: 'class A { constructor(){} onClick(){} }', options: customGroupOptions },
+		{ code: 'class A { onClick(){} abc(){} }', options: customGroupOptions },
+		{ code: 'class A { constructor(){} onClick(){} onChange(){} prop; }', parser: 'babel-eslint', options: customGroupOptions },
+
+		// object config options
+		{ code: 'class A { a(){} _p; static b(){} }', parser: 'babel-eslint', options: objectOrderOptions },
 	],
 	invalid: [
 		{
-			code: 'class Foo { constructor(){} static beforeCtor(){} }',
+			code: 'class A { constructor(){} static beforeCtor(){} }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -24,7 +67,7 @@ ruleTester.run('member-order', rule, {
 			],
 		},
 		{
-			code: 'class Foo { constructor(){} _other(){} afterCtor(){} }',
+			code: 'class A { constructor(){} _other(){} afterCtor(){} }',
 			errors: [
 				{
 					message: 'Expected method afterCtor to come before method _other.',
@@ -33,7 +76,7 @@ ruleTester.run('member-order', rule, {
 			],
 		},
 		{
-			code: 'class Foo { _afterCtor(){} constructor(){} }',
+			code: 'class A { _afterCtor(){} constructor(){} }',
 			errors: [
 				{
 					message: 'Expected constructor to come before method _afterCtor.',
@@ -42,13 +85,62 @@ ruleTester.run('member-order', rule, {
 			],
 		},
 		{
-			code: 'class Foo { constructor(){} bar; }',
+			code: 'class A { constructor(){} bar; }',
 			errors: [
 				{
 					message: 'Expected property bar to come before constructor.',
 					type: 'ClassProperty',
 				},
 			],
+			parser: 'babel-eslint',
+		},
+		{
+			code: 'class A { constructor(){} static bar; }',
+			errors: [
+				{
+					message: 'Expected static property bar to come before constructor.',
+					type: 'ClassProperty',
+				},
+			],
+			parser: 'babel-eslint',
+		},
+		// regexp groups
+		{
+			code: 'class A { abc(){} before(){} after(){} }',
+			errors: [
+				{
+					message: 'Expected method before to come before method abc.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: regexpOptions,
+		},
+		// [everything-else] group
+		{
+			code: 'class A { xyz(){} before(){} after(){}; }',
+			errors: [
+				{
+					message: 'Expected method before to come before method xyz.',
+					type: 'MethodDefinition',
+				},
+				{
+					message: 'Expected method after to come before method xyz.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: regexpOptions,
+		},
+		// custom group options
+		{
+			code: 'class A { onClick(){} constructor(){} }',
+			errors: [
+				{
+					message: 'Expected constructor to come before method onClick.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: customGroupOptions,
 		},
 	],
 });
+
