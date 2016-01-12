@@ -25,6 +25,34 @@ export default function memberOrder(context) {
 	};
 }
 
+export const schema = [{
+	type: 'object',
+	properties: {
+		order: { '$ref': '#/definitions/order' },
+		groups: { '$ref': '#/definitions/order' },
+	},
+	definitions: {
+		order: {
+			type: 'array',
+			items: {
+				anyOf: [
+					{ type: 'string' },
+					{
+						type: 'object',
+						properties: {
+							name: { type: 'string' },
+							type: { enum: [ 'method', 'property' ]},
+							static: { type: 'boolean' },
+						},
+						additionalProperties: false,
+					},
+				],
+			},
+		},
+	},
+	additionalProperties: false,
+}];
+
 function getMemberDescription(memberInfo) {
 	if (memberInfo.node.kind === 'constructor') {
 		return 'constructor';
