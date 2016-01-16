@@ -1,5 +1,5 @@
 import eslint from 'eslint';
-import rule from '../../src/rules/member-order';
+import { memberOrder } from '../../src/rules/member-order';
 
 let ruleTester = new eslint.RuleTester({ env: { es6: true }});
 
@@ -31,7 +31,7 @@ let objectOrderOptions = [{
 	],
 }];
 
-ruleTester.run('member-order', rule, {
+ruleTester.run('member-order', memberOrder, {
 	valid: [
 		{ code: 'class A {}' },
 		{ code: 'class A { static beforeCtor(){} constructor(){} }' },

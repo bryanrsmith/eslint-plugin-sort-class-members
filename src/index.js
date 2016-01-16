@@ -1,8 +1,9 @@
-import memberOrderRule from './rules/member-order';
+import { memberOrder } from './rules/member-order';
 
-export default {
+// use commonjs default export so ESLint can find the rule
+module.exports = {
 	rules: {
-		'member-order': memberOrderRule,
+		'member-order': memberOrder,
 	},
 	rulesConfig: {
 		'member-order': 0,
