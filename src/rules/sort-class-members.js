@@ -1,4 +1,4 @@
-export function memberOrder(context) {
+export function sortClassMembers(context) {
 	let sourceCode = context.getSourceCode();
 	let options = context.options[0] || {};
 	let orderedSlots = getExpectedOrder(options.order || defaultOrder, { ...defaultGroups, ...options.groups });
@@ -25,7 +25,7 @@ export function memberOrder(context) {
 	};
 }
 
-memberOrder.schema = [{
+sortClassMembers.schema = [{
 	type: 'object',
 	properties: {
 		order: { '$ref': '#/definitions/order' },
