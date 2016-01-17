@@ -102,7 +102,7 @@ function areMembersInCorrectOrder(first, second) {
 function getAcceptableSlots(memberInfo, orderedSlots) {
 	return orderedSlots
 		.map((slot, index) => ({ score: scoreMember(memberInfo, slot), index })) // check member against each slot
-		.filter(({ score }) => score !== -1) // discard slots that don't match
+		.filter(({ score }) => score > 0) // discard slots that don't match
 		.sort((a, b) => b.score - a.score) // sort best matching slots first
 		.filter(({ score }, i, array) => score === array[0].score) // take top scoring slots
 		.map(({ index }) => index) // we only need an array of slot indexes
