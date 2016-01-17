@@ -65,7 +65,10 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 		{ code: 'class A { a(){} _p; static b(){} }', parser: 'babel-eslint', options: objectOrderOptions },
 
 		// nested groups
-		{ code: 'class A { a(){} b(){} c(){} d(){} }', parser: 'babel-eslint', options: nestedGroupOptions },
+		{ code: 'class A { a(){} b(){} c(){} d(){} }', options: nestedGroupOptions },
+
+		// undefined groups
+		{ code: 'class A { a(){} b(){} }', options: [{ order: [ 'a', '[blah]', 'b' ]}]},
 	],
 	invalid: [
 		{
