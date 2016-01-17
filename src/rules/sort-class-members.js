@@ -33,7 +33,12 @@ sortClassMembers.schema = [{
 	type: 'object',
 	properties: {
 		order: { '$ref': '#/definitions/order' },
-		groups: { '$ref': '#/definitions/order' },
+		groups: {
+			patternProperties: {
+				'^.+$': { '$ref': '#/definitions/order' },
+			},
+			additionalProperties: false,
+		},
 	},
 	definitions: {
 		order: {
