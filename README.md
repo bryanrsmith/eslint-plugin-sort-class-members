@@ -40,6 +40,33 @@ Add `sort-class-members` to the plugins section of your `.eslintrc` configuratio
 }
 ```
 
+When using the default configuration (shown above), the following patterns are considered problems:
+
+```js
+class Foo {
+  b = 'bar';
+
+  c(){}
+
+  constructor(){} // error Expected constructor to come before method c
+
+  static a(){} // error Expected static method a to come before property b
+}
+```
+
+When using the default configuration (shown above), the following patterns are not considered problems:
+```js
+class Foo {
+  static a(){}
+
+  b = 'bar';
+
+  constructor(){}
+
+  c(){}
+}
+```
+
 ## Configuration
 
 The rule accepts two configuration properties:
