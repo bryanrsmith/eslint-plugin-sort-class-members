@@ -46,7 +46,7 @@ The rule accepts two configuration properties:
 * `order`: Used to specify the expected sort order of class members.
 * `groups`: May optionally be used to created customized named groups of members so that `order` can be more easily maintained. Groups can be referenced by name by using square brackets. E.g., `"[group-name]"`.
 
-```json
+```js
 {
   "order": [
     "constructor",
