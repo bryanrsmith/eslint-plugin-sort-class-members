@@ -1,35 +1,46 @@
-export function sortClassMembers(context) {
-	let sourceCode = context.getSourceCode();
-	let options = context.options[0] || {};
-	let orderedSlots = getExpectedOrder(options.order || defaultOrder, { ...defaultGroups, ...options.groups });
+export const sortClassMembers = {
+	getRule(defaults = {}) {
+		function sortClassMembersRule(context) {
+			let sourceCode = context.getSourceCode();
+			let options = context.options[0] || {};
+			let order = options.order || defaults.order || [];
+			let groups = { ...builtInGroups, ...defaults.groups, ...options.groups };
+			let orderedSlots = getExpectedOrder(order, groups);
 
-	return {
-		'ClassDeclaration'(node) {
-			let classMemberNodes = node.body.body;
+			return {
+				'ClassDeclaration'(node) {
+					let classMemberNodes = node.body.body;
 
-			let members = classMemberNodes
-				.map(member => {
-					let memberInfo = getMemberInfo(member, sourceCode);
-					memberInfo.acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+					let members = classMemberNodes
+						.map(member => {
+							let memberInfo = getMemberInfo(member, sourceCode);
+							memberInfo.acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
 
-					return memberInfo;
-				})
-				.filter(member => member.acceptableSlots.length); // ignore members that don't match any slots
+							return memberInfo;
+						})
+						// ignore members that don't match any slots
+						.filter(member => member.acceptableSlots.length);
 
-			for (let { source, target, expected } of findProblems(members, orderedSlots)) {
-				let reportData = {
-					source: getMemberDescription(source),
-					target: getMemberDescription(target),
-					expected: expected,
-				};
-				let message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
-				context.report({ node: source.node, message, data: reportData });
-			}
-		},
-	};
-}
+					for (let { source, target, expected } of findProblems(members, orderedSlots)) {
+						let reportData = {
+							source: getMemberDescription(source),
+							target: getMemberDescription(target),
+							expected: expected,
+						};
+						let message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
+						context.report({ node: source.node, message, data: reportData });
+					}
+				},
+			};
+		}
 
-sortClassMembers.schema = [{
+		sortClassMembersRule.schema = schema;
+
+		return sortClassMembersRule;
+	},
+};
+
+let schema = [{
 	type: 'object',
 	properties: {
 		order: { '$ref': '#/definitions/order' },
@@ -203,17 +214,7 @@ function flatten(collection) {
 	return result;
 }
 
-let defaultOrder = [
-	'[static-properties]',
-	'[static-methods]',
-	'[properties]',
-	'[conventional-private-properties]',
-	'constructor',
-	'[methods]',
-	'[conventional-private-methods]',
-];
-
-let defaultGroups = {
+let builtInGroups = {
 	'properties': { type: 'property' },
 	'static-properties': { type: 'property', static: true },
 	'conventional-private-properties': { type: 'property', name: '/_.+/' },

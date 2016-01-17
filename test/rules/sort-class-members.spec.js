@@ -1,5 +1,8 @@
 import eslint from 'eslint';
-import { sortClassMembers } from '../../src/rules/sort-class-members';
+import plugin from '../../src';
+
+let rule = plugin.rules['sort-class-members'];
+let defaultOptions = [plugin.rulesConfig['sort-class-members'][1]];
 
 let ruleTester = new eslint.RuleTester({ env: { es6: true }});
 
@@ -39,18 +42,18 @@ let nestedGroupOptions = [{
 	},
 }];
 
-ruleTester.run('sort-class-members', sortClassMembers, {
+ruleTester.run('sort-class-members', rule, {
 	valid: [
-		{ code: 'class A {}' },
-		{ code: 'class A { static beforeCtor(){} constructor(){} }' },
-		{ code: 'class A { static beforeCtor(){} constructor(){} afterCtor(){} }' },
-		{ code: 'class A { constructor(){} afterCtor(){} }' },
-		{ code: 'class A { constructor(){} afterCtor(){} other(){} }' },
-		{ code: 'class A { static a; static b(){} c; _d; constructor(){} e(){} }', parser: 'babel-eslint' },
+		{ code: 'class A {}', options: defaultOptions },
+		{ code: 'class A { static beforeCtor(){} constructor(){} }', options: defaultOptions },
+		{ code: 'class A { static beforeCtor(){} constructor(){} afterCtor(){} }', options: defaultOptions },
+		{ code: 'class A { constructor(){} afterCtor(){} }', options: defaultOptions },
+		{ code: 'class A { constructor(){} afterCtor(){} other(){} }', options: defaultOptions },
+		{ code: 'class A { static a; static b(){} c; _d; constructor(){} e(){} }', parser: 'babel-eslint', options: defaultOptions },
 
 		// class properties should work with babel-eslint
-		{ code: 'class A { static bar = 1; constructor(){} }', parser: 'babel-eslint' },
-		{ code: 'class A { bar = 1; constructor(){} }', parser: 'babel-eslint' },
+		{ code: 'class A { static bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
+		{ code: 'class A { bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
 
 		// regexp names
 		{ code: 'class A { before(){} abc(){} after(){} }', options: regexpOptions },
@@ -79,6 +82,7 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 					type: 'MethodDefinition',
 				},
 			],
+			options: defaultOptions,
 		},
 		{
 			code: 'class A { constructor(){} _other(){} afterCtor(){} }',
@@ -88,6 +92,7 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 					type: 'MethodDefinition',
 				},
 			],
+			options: defaultOptions,
 		},
 		{
 			code: 'class A { _afterCtor(){} constructor(){} }',
@@ -97,6 +102,7 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 					type: 'MethodDefinition',
 				},
 			],
+			options: defaultOptions,
 		},
 		{
 			code: 'class A { constructor(){} bar; }',
@@ -107,6 +113,7 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 				},
 			],
 			parser: 'babel-eslint',
+			options: defaultOptions,
 		},
 		{
 			code: 'class A { constructor(){} static bar; }',
@@ -117,6 +124,7 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 				},
 			],
 			parser: 'babel-eslint',
+			options: defaultOptions,
 		},
 		// regexp groups
 		{
