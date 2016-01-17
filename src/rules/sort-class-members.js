@@ -5,12 +5,16 @@ export function sortClassMembers(context) {
 
 	return {
 		'ClassDeclaration'(node) {
-			let members = node.body.body.map(member => {
-				let memberInfo = getMemberInfo(member, sourceCode);
-				memberInfo.acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+			let classMemberNodes = node.body.body;
 
-				return memberInfo;
-			});
+			let members = classMemberNodes
+				.map(member => {
+					let memberInfo = getMemberInfo(member, sourceCode);
+					memberInfo.acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+
+					return memberInfo;
+				})
+				.filter(member => member.acceptableSlots.length); // ignore members that don't match any slots
 
 			for (let { source, target, expected } of findProblems(members, orderedSlots)) {
 				let reportData = {
