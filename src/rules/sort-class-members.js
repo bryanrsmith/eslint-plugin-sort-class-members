@@ -130,17 +130,21 @@ function scoreMember(memberInfo, slot) {
 }
 
 function getExpectedOrder(order, groups) {
-	return order
-		.map(s => expandSlot(s, groups))
-		.reduce((collection, current) => [...collection, ...current], []);
+	return flatten(order.map(s => expandSlot(s, groups)));
 }
 
 function expandSlot(input, groups) {
-	let slot = input;
+	if (Array.isArray(input)) {
+		return input.map(x => expandSlot(x, groups));
+	}
+
+	let slot;
 	if (typeof input === 'string') {
 		slot = input[0] === '[' // check for [groupName] shorthand
 			? { group: input.substr(1, input.length - 2) }
 			: { name: input };
+	} else {
+		slot = { ...input };
 	}
 
 	if (slot.group) {
@@ -153,8 +157,11 @@ function expandSlot(input, groups) {
 	}
 
 	let testName = slot.name && getNameComparer(slot.name);
+	if (testName) {
+		slot.testName = testName;
+	}
 
-	return [{ ...slot, testName }];
+	return [slot];
 }
 
 function getNameComparer(name) {
@@ -175,6 +182,20 @@ function getNameComparer(name) {
 	}
 
 	return n => n === name;
+}
+
+function flatten(collection) {
+	let result = [];
+
+	for (let item of collection) {
+		if (Array.isArray(item)) {
+			result.push(...flatten(item));
+		} else {
+			result.push(item);
+		}
+	}
+
+	return result;
 }
 
 let defaultOrder = [

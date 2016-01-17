@@ -31,6 +31,14 @@ let objectOrderOptions = [{
 	],
 }];
 
+let nestedGroupOptions = [{
+	order: [ 'a', '[outer]', 'd' ],
+	groups: {
+		'outer': [ 'b', '[inner]' ],
+		'inner': [ 'c' ],
+	},
+}];
+
 ruleTester.run('sort-class-members', sortClassMembers, {
 	valid: [
 		{ code: 'class A {}' },
@@ -55,6 +63,9 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 
 		// object config options
 		{ code: 'class A { a(){} _p; static b(){} }', parser: 'babel-eslint', options: objectOrderOptions },
+
+		// nested groups
+		{ code: 'class A { a(){} b(){} c(){} d(){} }', parser: 'babel-eslint', options: nestedGroupOptions },
 	],
 	invalid: [
 		{
@@ -141,6 +152,16 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 			],
 			options: customGroupOptions,
 		},
+		// nested groups
+		{
+			code: 'class A { a(){} c(){} b(){} d(){} }',
+			errors: [
+				{
+					message: 'Expected method b to come before method c.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: nestedGroupOptions,
+		},
 	],
 });
-
