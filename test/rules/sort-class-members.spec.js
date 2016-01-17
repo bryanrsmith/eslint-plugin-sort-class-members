@@ -14,12 +14,12 @@ let regexpOptions = [{
 
 let customGroupOptions = [{
 	order: [
-		'constructor',
 		'[event-handlers]',
+		'constructor',
 		'[everything-else]',
 	],
 	groups: {
-		'event-handlers': { type: 'method', name: '/on.+/' },
+		'event-handlers': [{ type: 'method', name: '/on.+/' }],
 	},
 }];
 
@@ -49,9 +49,9 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 		{ code: 'class A { before(){} abc(){} after(){} xyz(){} }', options: regexpOptions },
 
 		// custom groups
-		{ code: 'class A { constructor(){} onClick(){} }', options: customGroupOptions },
+		{ code: 'class A { onClick(){} constructor(){} }', options: customGroupOptions },
 		{ code: 'class A { onClick(){} abc(){} }', options: customGroupOptions },
-		{ code: 'class A { constructor(){} onClick(){} onChange(){} prop; }', parser: 'babel-eslint', options: customGroupOptions },
+		{ code: 'class A { onClick(){} onChange(){} constructor(){} prop; }', parser: 'babel-eslint', options: customGroupOptions },
 
 		// object config options
 		{ code: 'class A { a(){} _p; static b(){} }', parser: 'babel-eslint', options: objectOrderOptions },
@@ -132,10 +132,10 @@ ruleTester.run('sort-class-members', sortClassMembers, {
 		},
 		// custom group options
 		{
-			code: 'class A { onClick(){} constructor(){} }',
+			code: 'class A { constructor(){} onClick(){} }',
 			errors: [
 				{
-					message: 'Expected constructor to come before method onClick.',
+					message: 'Expected method onClick to come before constructor.',
 					type: 'MethodDefinition',
 				},
 			],
