@@ -1,5 +1,6 @@
 [![build status][travis-image]][travis-url]
 [![test coverage][coveralls-image]][coveralls-url]
+[![npm][npm-image]][npm-url]
 
 # eslint-plugin-sort-class-members
 
@@ -115,3 +116,5 @@ The following groups are provided by default:
 [travis-url]: https://travis-ci.org/bryanrsmith/eslint-plugin-sort-class-members
 [coveralls-image]: https://img.shields.io/coveralls/bryanrsmith/eslint-plugin-sort-class-members/master.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/github/bryanrsmith/eslint-plugin-sort-class-members?branch=master
+[npm-image]: https://img.shields.io/npm/v/eslint-plugin-sort-class-members.svg?style=flat-square
+[npm-url]: https://www.npmjs.com/package/eslint-plugin-sort-class-members
