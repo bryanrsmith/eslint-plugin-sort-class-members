@@ -49,5 +49,8 @@
   "engines": {
     "node": ">=4.0.0"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "babel": {
+    "presets": ["stage-1", "es2015"]
+  }
 }
