@@ -1,3 +1,5 @@
+import { sortClassMembersSchema } from './schema';
+
 export const sortClassMembers = {
 	getRule(defaults = {}) {
 		function sortClassMembersRule(context) {
@@ -34,44 +36,11 @@ export const sortClassMembers = {
 			};
 		}
 
-		sortClassMembersRule.schema = schema;
+		sortClassMembersRule.schema = sortClassMembersSchema;
 
 		return sortClassMembersRule;
 	},
 };
-
-let schema = [{
-	type: 'object',
-	properties: {
-		order: { '$ref': '#/definitions/order' },
-		groups: {
-			patternProperties: {
-				'^.+$': { '$ref': '#/definitions/order' },
-			},
-			additionalProperties: false,
-		},
-	},
-	definitions: {
-		order: {
-			type: 'array',
-			items: {
-				anyOf: [
-					{ type: 'string' },
-					{
-						type: 'object',
-						properties: {
-							name: { type: 'string' },
-							type: { enum: [ 'method', 'property' ]},
-							static: { type: 'boolean' },
-						},
-						additionalProperties: false,
-					},
-				],
-			},
-		},
-	},
-	additionalProperties: false,
-}];
 
 function getMemberDescription(memberInfo) {
 	if (memberInfo.node.kind === 'constructor') {
