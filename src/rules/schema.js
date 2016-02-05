@@ -8,6 +8,9 @@ export let sortClassMembersSchema = [{
 			},
 			additionalProperties: false,
 		},
+		stopAfterFirstProblem: {
+			type: 'boolean',
+		},
 	},
 	definitions: {
 		order: {

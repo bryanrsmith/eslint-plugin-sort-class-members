@@ -42,6 +42,11 @@ let nestedGroupOptions = [{
 	},
 }];
 
+let stopAfterFirstOptions = [{
+	order: [ 'a', 'b', 'c' ],
+	stopAfterFirstProblem: true,
+}];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -173,6 +178,16 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: nestedGroupOptions,
+		},
+		{
+			code: 'class A { b(){} c(){} a(){} }',
+			errors: [
+				{
+					message: 'Expected method a to come before method b. (1 similar problem in this class)',
+					type: 'MethodDefinition',
+				},
+			],
+			options: stopAfterFirstOptions,
 		},
 	],
 });

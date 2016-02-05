@@ -5,6 +5,7 @@ export const sortClassMembers = {
 		function sortClassMembersRule(context) {
 			let sourceCode = context.getSourceCode();
 			let options = context.options[0] || {};
+			let stopAfterFirst = !!options.stopAfterFirstProblem;
 			let order = options.order || defaults.order || [];
 			let groups = { ...builtInGroups, ...defaults.groups, ...options.groups };
 			let orderedSlots = getExpectedOrder(order, groups);
@@ -16,21 +17,35 @@ export const sortClassMembers = {
 					let members = classMemberNodes
 						.map(member => {
 							let memberInfo = getMemberInfo(member, sourceCode);
-							memberInfo.acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+							let acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
 
-							return memberInfo;
+							return { ...memberInfo, acceptableSlots };
 						})
 						// ignore members that don't match any slots
 						.filter(member => member.acceptableSlots.length);
 
-					for (let { source, target, expected } of findProblems(members, orderedSlots)) {
+					let problems = findProblems(members, orderedSlots);
+					let problemCount = problems.length;
+					for (let { source, target, expected } of problems) {
 						let reportData = {
 							source: getMemberDescription(source),
 							target: getMemberDescription(target),
 							expected: expected,
 						};
+
 						let message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
+
+						if (stopAfterFirst && problemCount > 1) {
+							message += ' ({{ more }} similar {{ problem }} in this class)';
+							reportData.more = problemCount - 1;
+							reportData.problem = problemCount === 2 ? 'problem' : 'problems';
+						}
+
 						context.report({ node: source.node, message, data: reportData });
+
+						if (stopAfterFirst) {
+							break;
+						}
 					}
 				},
 			};

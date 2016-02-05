@@ -70,9 +70,10 @@ class Foo {
 
 ## Configuration
 
-The rule accepts two configuration properties:
+The rule accepts three configuration properties:
 * `order`: Used to specify the expected sort order of class members.
 * `groups`: May optionally be used to created customized named groups of members so that `order` can be more easily maintained. Groups can be referenced by name by using square brackets. E.g., `"[group-name]"`.
+* `stopAfterFirstProblem`: Only report the first sort problem in each class (plus the number of problems found). Useful if you only want to know that the class has sort problems without spamming error messages. The default is `false`.
 
 ```js
 {
@@ -83,7 +84,8 @@ The rule accepts two configuration properties:
   ],
   "groups": {
     "event-handlers": [{ "name": "/on.+/", "type": "method" }]
-  }
+  },
+  "stopAfterFirstProblem": false
 }
 ```
 
