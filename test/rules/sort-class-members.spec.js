@@ -2,7 +2,7 @@ import eslint from 'eslint';
 import plugin from '../../src';
 
 let rule = plugin.rules['sort-class-members'];
-let defaultOptions = [plugin.rulesConfig['sort-class-members'][1]];
+let defaultOptions = [ plugin.rulesConfig['sort-class-members'][1] ];
 
 let ruleTester = new eslint.RuleTester({ env: { es6: true }});
 

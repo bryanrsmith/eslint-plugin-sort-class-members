@@ -6,7 +6,7 @@ module.exports = {
 		'sort-class-members': sortClassMembers.getRule(),
 	},
 	rulesConfig: {
-		'sort-class-members': [0, {
+		'sort-class-members': [ 0, {
 			order: [
 				'[static-properties]',
 				'[static-methods]',

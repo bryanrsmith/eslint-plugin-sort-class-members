@@ -30,7 +30,7 @@ export const sortClassMembers = {
 						let reportData = {
 							source: getMemberDescription(source),
 							target: getMemberDescription(target),
-							expected: expected,
+							expected,
 						};
 
 						let message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
@@ -71,7 +71,7 @@ function getMemberInfo(node, sourceCode) {
 
 	if (node.type === 'ClassProperty') {
 		type = 'property';
-		let [first, second] = sourceCode.getFirstTokens(node, 2);
+		let [ first, second ] = sourceCode.getFirstTokens(node, 2);
 		name = second.type === 'Identifier' ? second.value : first.value;
 	} else {
 		name = node.key.name;
@@ -161,7 +161,7 @@ function expandSlot(input, groups) {
 		slot.testName = testName;
 	}
 
-	return [slot];
+	return [ slot ];
 }
 
 function getNameComparer(name) {
