@@ -50,7 +50,7 @@
   "engines": {
     "node": ">=4.0.0"
   },
-  "license": "ISC",
+  "license": "MIT",
   "babel": {
     "presets": [
       "stage-1",
