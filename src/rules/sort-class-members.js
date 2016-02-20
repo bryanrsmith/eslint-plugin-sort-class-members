@@ -12,36 +12,27 @@ export const sortClassMembers = {
 
 			return {
 				'ClassDeclaration'(node) {
-					let classMemberNodes = node.body.body;
+					let members = getClassMemberInfos(node, sourceCode, orderedSlots);
 
-					let members = classMemberNodes
-						.map(member => {
-							let memberInfo = getMemberInfo(member, sourceCode);
-							let acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+					let accessorPairProblems = findAccessorPairProblems(members, orderedSlots);
+					for (let problem of accessorPairProblems) {
+						let message = 'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
 
-							return { ...memberInfo, acceptableSlots };
-						})
-						// ignore members that don't match any slots
-						.filter(member => member.acceptableSlots.length);
+						reportProblem({ problem, context, message, stopAfterFirst, problemCount });
+						if (stopAfterFirst) {
+							break;
+						}
+					}
+
+					// filter out the second accessor in each pair so we only detect one problem
+					// for out-of-order	accessor pairs
+					members = members.filter(m => !(m.matchingAccessor && !m.isFirstAccessor));
 
 					let problems = findProblems(members, orderedSlots);
 					let problemCount = problems.length;
-					for (let { source, target, expected } of problems) {
-						let reportData = {
-							source: getMemberDescription(source),
-							target: getMemberDescription(target),
-							expected,
-						};
-
+					for (let problem of problems) {
 						let message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
-
-						if (stopAfterFirst && problemCount > 1) {
-							message += ' ({{ more }} similar {{ problem }} in this class)';
-							reportData.more = problemCount - 1;
-							reportData.problem = problemCount === 2 ? 'problem' : 'problems';
-						}
-
-						context.report({ node: source.node, message, data: reportData });
+						reportProblem({ problem, message, context, stopAfterFirst, problemCount });
 
 						if (stopAfterFirst) {
 							break;
@@ -57,12 +48,54 @@ export const sortClassMembers = {
 	},
 };
 
-function getMemberDescription(memberInfo) {
-	if (memberInfo.node.kind === 'constructor') {
+function reportProblem({ problem, message, context, stopAfterFirst, problemCount }) {
+	let { source, target, expected } = problem;
+	let reportData = {
+		source: getMemberDescription(source),
+		target: getMemberDescription(target),
+		expected,
+	};
+
+	if (stopAfterFirst && problemCount > 1) {
+		message += ' ({{ more }} similar {{ problem }} in this class)';
+		reportData.more = problemCount - 1;
+		reportData.problem = problemCount === 2 ? 'problem' : 'problems';
+	}
+
+	context.report({ node: source.node, message, data: reportData });
+}
+
+function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
+	let classMemberNodes = classDeclaration.body.body;
+
+	let members = classMemberNodes
+		.map(member => getMemberInfo(member, sourceCode))
+		.map((memberInfo, i, memberInfos) => {
+			matchAccessorPairs(memberInfos);
+			let acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+			return { ...memberInfo, acceptableSlots };
+		})
+		// ignore members that don't match any slots
+		.filter(member => member.acceptableSlots.length);
+
+	return members;
+}
+
+function getMemberDescription(member) {
+	if (member.kind === 'constructor') {
 		return 'constructor';
 	}
 
-	return `${memberInfo.static ? 'static ' : ''}${memberInfo.type} ${memberInfo.name}`;
+	let typeName;
+	if (member.matchingAccessor) {
+		typeName = 'accessor pair';
+	} else if (isAccessor(member)) {
+		typeName = `${member.kind}ter`;
+	} else {
+		typeName = member.type;
+	}
+
+	return `${member.static ? 'static ' : ''}${typeName} ${member.name}`;
 }
 
 function getMemberInfo(node, sourceCode) {
@@ -78,21 +111,39 @@ function getMemberInfo(node, sourceCode) {
 		type = 'method';
 	}
 
-	return { name, type, static: node.static, node };
+	return { name, type, static: node.static, kind: node.kind, node };
+}
+
+function findAccessorPairProblems(members) {
+	let problems = [];
+
+	forEachPair(members, (first, second, firstIndex, secondIndex) => {
+		if (first.matchingAccessor === second && secondIndex - firstIndex !== 1) {
+			problems.push({ source: second, target: first, expected: 'after' });
+		}
+	});
+
+	return problems;
 }
 
 function findProblems(members) {
 	let problems = [];
 
-	members.forEach((first, firstIndex) => {
-		members.slice(firstIndex + 1).forEach((second) => {
-			if (!areMembersInCorrectOrder(first, second)) {
-				problems.push({ source: second, target: first, expected: 'before' });
-			}
-		});
+	forEachPair(members, (first, second) => {
+		if (!areMembersInCorrectOrder(first, second)) {
+			problems.push({ source: second, target: first, expected: 'before' });
+		}
 	});
 
 	return problems;
+}
+
+function forEachPair(list, callback) {
+	list.forEach((first, firstIndex) => {
+		list.slice(firstIndex + 1).forEach((second, secondIndex) => {
+			callback(first, second, firstIndex, secondIndex);
+		});
+	});
 }
 
 function areMembersInCorrectOrder(first, second) {
@@ -164,6 +215,21 @@ function expandSlot(input, groups) {
 	return [ slot ];
 }
 
+function isAccessor({ kind }) {
+	return kind === 'get' || kind === 'set';
+}
+
+function matchAccessorPairs(members) {
+	forEachPair(members, (first, second) => {
+		let isMatch = first.name === second.name && first.static === second.static;
+		if (isAccessor(first) && isAccessor(second) && isMatch) {
+			first.isFirstAccessor = true;
+			first.matchingAccessor = second;
+			second.matchingAccessor = first;
+		}
+	});
+}
+
 function getNameComparer(name) {
 	if (name[0] === '/') {
 		let namePattern = name.substr(1, name.length - 2);
@@ -212,4 +278,6 @@ let comparers = [
 	{ property: 'name', value: 100, test: (m, s) => s.testName(m.name) },
 	{ property: 'type', value: 10, test: (m, s) => s.type === m.type },
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
+	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
+	{ property: 'accessorPair', value: 20, test: (m, s) => s.accessorPair && m.matchingAccessor },
 ];

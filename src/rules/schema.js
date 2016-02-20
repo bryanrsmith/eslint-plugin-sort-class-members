@@ -24,6 +24,7 @@ export let sortClassMembersSchema = [{
 							name: { type: 'string' },
 							type: { enum: [ 'method', 'property' ]},
 							static: { type: 'boolean' },
+							kind: { enum: [ 'get', 'set' ]},
 						},
 						additionalProperties: false,
 					},

@@ -47,6 +47,15 @@ let stopAfterFirstOptions = [{
 	stopAfterFirstProblem: true,
 }];
 
+let accessorOptions = {
+	order: [
+		{ kind: 'get' },
+		{ kind: 'set' },
+		{ accessorPair: true },
+		'[everything-else]',
+	],
+};
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -77,6 +86,13 @@ ruleTester.run('sort-class-members', rule, {
 
 		// undefined groups
 		{ code: 'class A { a(){} b(){} }', options: [{ order: [ 'a', '[blah]', 'b' ]}]},
+
+		// accessors
+		{ code: 'class A { get a(){} }', options: [ accessorOptions ]},
+		{ code: 'class A { get a(){} set a(v){} }', options: [ accessorOptions ]},
+		{ code: 'class A { set a(v){} }', options: [ accessorOptions ]},
+		{ code: 'class A { get a(){} b(){} }', options: [ accessorOptions ]},
+		{ code: 'class A { get a(){} set b(v){} get c(){} set c(v){} }', options: [ accessorOptions ]},
 	],
 	invalid: [
 		{
@@ -188,6 +204,37 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: stopAfterFirstOptions,
+		},
+		// accessors
+		{
+			code: 'class A { b(){} get a(){} }',
+			errors: [
+				{
+					message: 'Expected getter a to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: [ accessorOptions ],
+		},
+		{
+			code: 'class A { b(){} set a(v){} }',
+			errors: [
+				{
+					message: 'Expected setter a to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: [ accessorOptions ],
+		},
+		{
+			code: 'class A { b(){} get a(){} set a(v){} }',
+			errors: [
+				{
+					message: 'Expected accessor pair a to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: [ accessorOptions ],
 		},
 	],
 });
