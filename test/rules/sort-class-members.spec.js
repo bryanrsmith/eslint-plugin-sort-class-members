@@ -2,7 +2,7 @@ import eslint from 'eslint';
 import plugin from '../../src';
 
 let rule = plugin.rules['sort-class-members'];
-let defaultOptions = [ plugin.rulesConfig['sort-class-members'][1] ];
+let defaultOptions = [ plugin.configs.recommended.rules['sort-class-members'][1] ];
 
 let ruleTester = new eslint.RuleTester({ env: { es6: true }});
 
@@ -63,7 +63,7 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { static beforeCtor(){} constructor(){} afterCtor(){} }', options: defaultOptions },
 		{ code: 'class A { constructor(){} afterCtor(){} }', options: defaultOptions },
 		{ code: 'class A { constructor(){} afterCtor(){} other(){} }', options: defaultOptions },
-		{ code: 'class A { static a; static b(){} c; _d; constructor(){} e(){} }', parser: 'babel-eslint', options: defaultOptions },
+		{ code: 'class A { static a = 1; static b(){} c = 2; _d = 3; constructor(){} e(){} }', parser: 'babel-eslint', options: defaultOptions },
 
 		// class properties should work with babel-eslint
 		{ code: 'class A { static bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
@@ -79,7 +79,7 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { onClick(){} onChange(){} constructor(){} prop; }', parser: 'babel-eslint', options: customGroupOptions },
 
 		// object config options
-		{ code: 'class A { a(){} _p; static b(){} }', parser: 'babel-eslint', options: objectOrderOptions },
+		{ code: 'class A { a(){} _p = 1; static b(){} }', parser: 'babel-eslint', options: objectOrderOptions },
 
 		// nested groups
 		{ code: 'class A { a(){} b(){} c(){} d(){} }', options: nestedGroupOptions },
