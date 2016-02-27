@@ -3,18 +3,20 @@ import { sortClassMembersSchema } from './schema';
 export const sortClassMembers = {
 	getRule(defaults = {}) {
 		function sortClassMembersRule(context) {
-			let sourceCode = context.getSourceCode();
 			let options = context.options[0] || {};
 			let stopAfterFirst = !!options.stopAfterFirstProblem;
+			let accessorPairPositioning = options.accessorPairPositioning || 'getThenSet';
 			let order = options.order || defaults.order || [];
 			let groups = { ...builtInGroups, ...defaults.groups, ...options.groups };
 			let orderedSlots = getExpectedOrder(order, groups);
+			let groupAccessors = accessorPairPositioning !== 'any';
 
 			return {
 				'ClassDeclaration'(node) {
-					let members = getClassMemberInfos(node, sourceCode, orderedSlots);
+					let members = getClassMemberInfos(node, context.getSourceCode(), orderedSlots);
 
-					let accessorPairProblems = findAccessorPairProblems(members, orderedSlots);
+					// check for out-of-order and separated get/set pairs
+					let accessorPairProblems = findAccessorPairProblems(members, accessorPairPositioning);
 					for (let problem of accessorPairProblems) {
 						let message = 'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
 
@@ -28,11 +30,15 @@ export const sortClassMembers = {
 					// for out-of-order	accessor pairs
 					members = members.filter(m => !(m.matchingAccessor && !m.isFirstAccessor));
 
+					// ignore members that don't match any slots
+					members = members.filter(member => member.acceptableSlots.length);
+
+					// check member positions against rule order
 					let problems = findProblems(members, orderedSlots);
 					let problemCount = problems.length;
 					for (let problem of problems) {
 						let message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
-						reportProblem({ problem, message, context, stopAfterFirst, problemCount });
+						reportProblem({ problem, message, context, stopAfterFirst, problemCount, groupAccessors });
 
 						if (stopAfterFirst) {
 							break;
@@ -48,11 +54,11 @@ export const sortClassMembers = {
 	},
 };
 
-function reportProblem({ problem, message, context, stopAfterFirst, problemCount }) {
+function reportProblem({ problem, message, context, stopAfterFirst, problemCount, groupAccessors }) {
 	let { source, target, expected } = problem;
 	let reportData = {
-		source: getMemberDescription(source),
-		target: getMemberDescription(target),
+		source: getMemberDescription(source, { groupAccessors }),
+		target: getMemberDescription(target, { groupAccessors }),
 		expected,
 	};
 
@@ -65,29 +71,13 @@ function reportProblem({ problem, message, context, stopAfterFirst, problemCount
 	context.report({ node: source.node, message, data: reportData });
 }
 
-function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
-	let classMemberNodes = classDeclaration.body.body;
-
-	let members = classMemberNodes
-		.map(member => getMemberInfo(member, sourceCode))
-		.map((memberInfo, i, memberInfos) => {
-			matchAccessorPairs(memberInfos);
-			let acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
-			return { ...memberInfo, acceptableSlots };
-		})
-		// ignore members that don't match any slots
-		.filter(member => member.acceptableSlots.length);
-
-	return members;
-}
-
-function getMemberDescription(member) {
+function getMemberDescription(member, { groupAccessors }) {
 	if (member.kind === 'constructor') {
 		return 'constructor';
 	}
 
 	let typeName;
-	if (member.matchingAccessor) {
+	if (member.matchingAccessor && groupAccessors) {
 		typeName = 'accessor pair';
 	} else if (isAccessor(member)) {
 		typeName = `${member.kind}ter`;
@@ -96,6 +86,20 @@ function getMemberDescription(member) {
 	}
 
 	return `${member.static ? 'static ' : ''}${typeName} ${member.name}`;
+}
+
+function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
+	let classMemberNodes = classDeclaration.body.body;
+
+	let members = classMemberNodes
+		.map((member, i) => ({ ...getMemberInfo(member, sourceCode), id: String(i) }))
+		.map((memberInfo, i, memberInfos) => {
+			matchAccessorPairs(memberInfos);
+			let acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+			return { ...memberInfo, acceptableSlots };
+		});
+
+	return members;
 }
 
 function getMemberInfo(node, sourceCode) {
@@ -114,12 +118,22 @@ function getMemberInfo(node, sourceCode) {
 	return { name, type, static: node.static, kind: node.kind, node };
 }
 
-function findAccessorPairProblems(members) {
+function findAccessorPairProblems(members, positioning) {
 	let problems = [];
+	if (positioning === 'any') {
+		return problems;
+	}
 
 	forEachPair(members, (first, second, firstIndex, secondIndex) => {
-		if (first.matchingAccessor === second && secondIndex - firstIndex !== 1) {
-			problems.push({ source: second, target: first, expected: 'after' });
+		if (first.matchingAccessor === second.id) {
+			let outOfOrder = (positioning === 'getThenSet' && first.kind !== 'get') ||
+				(positioning === 'setThenGet' && first.kind !== 'set');
+			let outOfPosition = secondIndex - firstIndex !== 1;
+
+			if (outOfOrder || outOfPosition) {
+				let expected = outOfOrder ? 'before' : 'after';
+				problems.push({ source: second, target: first, expected });
+			}
 		}
 	});
 
@@ -141,7 +155,7 @@ function findProblems(members) {
 function forEachPair(list, callback) {
 	list.forEach((first, firstIndex) => {
 		list.slice(firstIndex + 1).forEach((second, secondIndex) => {
-			callback(first, second, firstIndex, secondIndex);
+			callback(first, second, firstIndex, firstIndex + secondIndex + 1);
 		});
 	});
 }
@@ -224,8 +238,8 @@ function matchAccessorPairs(members) {
 		let isMatch = first.name === second.name && first.static === second.static;
 		if (isAccessor(first) && isAccessor(second) && isMatch) {
 			first.isFirstAccessor = true;
-			first.matchingAccessor = second;
-			second.matchingAccessor = first;
+			first.matchingAccessor = second.id;
+			second.matchingAccessor = first.id;
 		}
 	});
 }
@@ -266,6 +280,9 @@ function flatten(collection) {
 
 let builtInGroups = {
 	'properties': { type: 'property' },
+	'getters': { kind: 'get' },
+	'setters': { kind: 'set' },
+	'accessor-pairs': { accessorPair: true },
 	'static-properties': { type: 'property', static: true },
 	'conventional-private-properties': { type: 'property', name: '/_.+/' },
 	'methods': { type: 'method' },

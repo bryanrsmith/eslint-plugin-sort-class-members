@@ -11,6 +11,9 @@ export let sortClassMembersSchema = [{
 		stopAfterFirstProblem: {
 			type: 'boolean',
 		},
+		accessorPairPositioning: {
+			enum: [ 'getThenSet', 'setThenGet', 'together', 'any' ],
+		},
 	},
 	definitions: {
 		order: {

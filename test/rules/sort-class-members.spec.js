@@ -47,14 +47,14 @@ let stopAfterFirstOptions = [{
 	stopAfterFirstProblem: true,
 }];
 
-let accessorOptions = {
+let accessorOptions = [{
 	order: [
 		{ kind: 'get' },
 		{ kind: 'set' },
 		{ accessorPair: true },
 		'[everything-else]',
 	],
-};
+}];
 
 ruleTester.run('sort-class-members', rule, {
 	valid: [
@@ -88,11 +88,14 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { a(){} b(){} }', options: [{ order: [ 'a', '[blah]', 'b' ]}]},
 
 		// accessors
-		{ code: 'class A { get a(){} }', options: [ accessorOptions ]},
-		{ code: 'class A { get a(){} set a(v){} }', options: [ accessorOptions ]},
-		{ code: 'class A { set a(v){} }', options: [ accessorOptions ]},
-		{ code: 'class A { get a(){} b(){} }', options: [ accessorOptions ]},
-		{ code: 'class A { get a(){} set b(v){} get c(){} set c(v){} }', options: [ accessorOptions ]},
+		{ code: 'class A { get a(){} }', options: accessorOptions },
+		{ code: 'class A { get a(){} set a(v){} }', options: accessorOptions },
+		{ code: 'class A { set a(v){} }', options: accessorOptions },
+		{ code: 'class A { get a(){} b(){} }', options: accessorOptions },
+		{ code: 'class A { get a(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'getThenSet' }]},
+		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'together' }]},
+		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'setThenGet' }]},
+		{ code: 'class A { get a(){} get b(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'any' }]},
 	],
 	invalid: [
 		{
@@ -214,7 +217,7 @@ ruleTester.run('sort-class-members', rule, {
 					type: 'MethodDefinition',
 				},
 			],
-			options: [ accessorOptions ],
+			options: accessorOptions,
 		},
 		{
 			code: 'class A { b(){} set a(v){} }',
@@ -224,7 +227,7 @@ ruleTester.run('sort-class-members', rule, {
 					type: 'MethodDefinition',
 				},
 			],
-			options: [ accessorOptions ],
+			options: accessorOptions,
 		},
 		{
 			code: 'class A { b(){} get a(){} set a(v){} }',
@@ -234,7 +237,41 @@ ruleTester.run('sort-class-members', rule, {
 					type: 'MethodDefinition',
 				},
 			],
-			options: [ accessorOptions ],
+			options: accessorOptions,
+		},
+		{
+			code: 'class A { b(){} get a(){} c(){} set a(v){} }',
+			errors: [
+				{
+					message: 'Expected accessor pair a to come before method b.',
+					type: 'MethodDefinition',
+				},
+				{
+					message: 'Expected setter a to come immediately after getter a.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: accessorOptions,
+		},
+		{
+			code: 'class A { set a(v){} get a(){}  }',
+			errors: [
+				{
+					message: 'Expected getter a to come immediately before setter a.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: accessorOptions,
+		},
+		{
+			code: 'class A { get a(){} set a(v){} }',
+			errors: [
+				{
+					message: 'Expected setter a to come immediately before getter a.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'setThenGet' }],
 		},
 	],
 });
