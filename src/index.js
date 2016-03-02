@@ -8,7 +8,7 @@ module.exports = {
 	configs: {
 		recommended: {
 			rules: {
-				'sort-class-members': [ 2, {
+				'sort-class-members/sort-class-members': [ 2, {
 					order: [
 						'[static-properties]',
 						'[static-methods]',
@@ -18,6 +18,7 @@ module.exports = {
 						'[methods]',
 						'[conventional-private-methods]',
 					],
+					accessorPairPositioning: 'getThenSet',
 				}],
 			},
 		},
