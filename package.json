@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-sort-class-members",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "ESLint rule for enforcing consistent ES6 class member order.",
   "keywords": [
     "eslint",
