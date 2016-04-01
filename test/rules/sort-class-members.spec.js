@@ -68,6 +68,7 @@ ruleTester.run('sort-class-members', rule, {
 		// class properties should work with babel-eslint
 		{ code: 'class A { static bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
 		{ code: 'class A { bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
+		{ code: 'class A { foo }', parser: 'babel-eslint', options: defaultOptions },
 
 		// regexp names
 		{ code: 'class A { before(){} abc(){} after(){} }', options: regexpOptions },

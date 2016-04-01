@@ -109,7 +109,7 @@ function getMemberInfo(node, sourceCode) {
 	if (node.type === 'ClassProperty') {
 		type = 'property';
 		let [ first, second ] = sourceCode.getFirstTokens(node, 2);
-		name = second.type === 'Identifier' ? second.value : first.value;
+		name = (second && second.type === 'Identifier') ? second.value : first.value;
 	} else {
 		name = node.key.name;
 		type = 'method';
