@@ -3,22 +3,22 @@ import { sortClassMembersSchema } from './schema';
 export const sortClassMembers = {
 	getRule(defaults = {}) {
 		function sortClassMembersRule(context) {
-			let options = context.options[0] || {};
-			let stopAfterFirst = !!options.stopAfterFirstProblem;
-			let accessorPairPositioning = options.accessorPairPositioning || 'getThenSet';
-			let order = options.order || defaults.order || [];
-			let groups = { ...builtInGroups, ...defaults.groups, ...options.groups };
-			let orderedSlots = getExpectedOrder(order, groups);
-			let groupAccessors = accessorPairPositioning !== 'any';
+			const options = context.options[0] || {};
+			const stopAfterFirst = !!options.stopAfterFirstProblem;
+			const accessorPairPositioning = options.accessorPairPositioning || 'getThenSet';
+			const order = options.order || defaults.order || [];
+			const groups = { ...builtInGroups, ...defaults.groups, ...options.groups };
+			const orderedSlots = getExpectedOrder(order, groups);
+			const groupAccessors = accessorPairPositioning !== 'any';
 
 			return {
 				'ClassDeclaration'(node) {
 					let members = getClassMemberInfos(node, context.getSourceCode(), orderedSlots);
 
 					// check for out-of-order and separated get/set pairs
-					let accessorPairProblems = findAccessorPairProblems(members, accessorPairPositioning);
-					for (let problem of accessorPairProblems) {
-						let message = 'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
+					const accessorPairProblems = findAccessorPairProblems(members, accessorPairPositioning);
+					for (const problem of accessorPairProblems) {
+						const message = 'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
 
 						reportProblem({ problem, context, message, stopAfterFirst, problemCount });
 						if (stopAfterFirst) {
@@ -34,10 +34,10 @@ export const sortClassMembers = {
 					members = members.filter(member => member.acceptableSlots.length);
 
 					// check member positions against rule order
-					let problems = findProblems(members, orderedSlots);
-					let problemCount = problems.length;
-					for (let problem of problems) {
-						let message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
+					const problems = findProblems(members, orderedSlots);
+					const problemCount = problems.length;
+					for (const problem of problems) {
+						const message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
 						reportProblem({ problem, message, context, stopAfterFirst, problemCount, groupAccessors });
 
 						if (stopAfterFirst) {
@@ -55,8 +55,8 @@ export const sortClassMembers = {
 };
 
 function reportProblem({ problem, message, context, stopAfterFirst, problemCount, groupAccessors }) {
-	let { source, target, expected } = problem;
-	let reportData = {
+	const { source, target, expected } = problem;
+	const reportData = {
 		source: getMemberDescription(source, { groupAccessors }),
 		target: getMemberDescription(target, { groupAccessors }),
 		expected,
@@ -89,13 +89,13 @@ function getMemberDescription(member, { groupAccessors }) {
 }
 
 function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
-	let classMemberNodes = classDeclaration.body.body;
+	const classMemberNodes = classDeclaration.body.body;
 
-	let members = classMemberNodes
+	const members = classMemberNodes
 		.map((member, i) => ({ ...getMemberInfo(member, sourceCode), id: String(i) }))
 		.map((memberInfo, i, memberInfos) => {
 			matchAccessorPairs(memberInfos);
-			let acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
+			const acceptableSlots = getAcceptableSlots(memberInfo, orderedSlots);
 			return { ...memberInfo, acceptableSlots };
 		});
 
@@ -108,7 +108,7 @@ function getMemberInfo(node, sourceCode) {
 
 	if (node.type === 'ClassProperty') {
 		type = 'property';
-		let [ first, second ] = sourceCode.getFirstTokens(node, 2);
+		const [ first, second ] = sourceCode.getFirstTokens(node, 2);
 		name = (second && second.type === 'Identifier') ? second.value : first.value;
 	} else {
 		name = node.key.name;
@@ -119,19 +119,19 @@ function getMemberInfo(node, sourceCode) {
 }
 
 function findAccessorPairProblems(members, positioning) {
-	let problems = [];
+	const problems = [];
 	if (positioning === 'any') {
 		return problems;
 	}
 
 	forEachPair(members, (first, second, firstIndex, secondIndex) => {
 		if (first.matchingAccessor === second.id) {
-			let outOfOrder = (positioning === 'getThenSet' && first.kind !== 'get') ||
+			const outOfOrder = (positioning === 'getThenSet' && first.kind !== 'get') ||
 				(positioning === 'setThenGet' && first.kind !== 'set');
-			let outOfPosition = secondIndex - firstIndex !== 1;
+			const outOfPosition = secondIndex - firstIndex !== 1;
 
 			if (outOfOrder || outOfPosition) {
-				let expected = outOfOrder ? 'before' : 'after';
+				const expected = outOfOrder ? 'before' : 'after';
 				problems.push({ source: second, target: first, expected });
 			}
 		}
@@ -141,7 +141,7 @@ function findAccessorPairProblems(members, positioning) {
 }
 
 function findProblems(members) {
-	let problems = [];
+	const problems = [];
 
 	forEachPair(members, (first, second) => {
 		if (!areMembersInCorrectOrder(first, second)) {
@@ -179,7 +179,7 @@ function scoreMember(memberInfo, slot) {
 		return 1; // default/everything-else slot
 	}
 
-	let scores = comparers.map(({ property, value, test }) => {
+	const scores = comparers.map(({ property, value, test }) => {
 		if (slot[property] !== undefined) {
 			return test(memberInfo, slot) ? value : -1;
 		}
@@ -221,7 +221,7 @@ function expandSlot(input, groups) {
 		return [];
 	}
 
-	let testName = slot.name && getNameComparer(slot.name);
+	const testName = slot.name && getNameComparer(slot.name);
 	if (testName) {
 		slot.testName = testName;
 	}
@@ -235,7 +235,7 @@ function isAccessor({ kind }) {
 
 function matchAccessorPairs(members) {
 	forEachPair(members, (first, second) => {
-		let isMatch = first.name === second.name && first.static === second.static;
+		const isMatch = first.name === second.name && first.static === second.static;
 		if (isAccessor(first) && isAccessor(second) && isMatch) {
 			first.isFirstAccessor = true;
 			first.matchingAccessor = second.id;
@@ -249,14 +249,14 @@ function getNameComparer(name) {
 		let namePattern = name.substr(1, name.length - 2);
 
 		if (namePattern[0] !== '^') {
-			namePattern = '^' + namePattern;
+			namePattern = `^${namePattern}`;
 		}
 
 		if (namePattern[namePattern.length - 1] !== '$') {
 			namePattern += '$';
 		}
 
-		let re = new RegExp(namePattern);
+		const re = new RegExp(namePattern);
 
 		return n => re.test(n);
 	}
@@ -265,9 +265,9 @@ function getNameComparer(name) {
 }
 
 function flatten(collection) {
-	let result = [];
+	const result = [];
 
-	for (let item of collection) {
+	for (const item of collection) {
 		if (Array.isArray(item)) {
 			result.push(...flatten(item));
 		} else {
@@ -278,7 +278,7 @@ function flatten(collection) {
 	return result;
 }
 
-let builtInGroups = {
+const builtInGroups = {
 	'properties': { type: 'property' },
 	'getters': { kind: 'get' },
 	'setters': { kind: 'set' },
@@ -291,7 +291,7 @@ let builtInGroups = {
 	'everything-else': {},
 };
 
-let comparers = [
+const comparers = [
 	{ property: 'name', value: 100, test: (m, s) => s.testName(m.name) },
 	{ property: 'type', value: 10, test: (m, s) => s.type === m.type },
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },

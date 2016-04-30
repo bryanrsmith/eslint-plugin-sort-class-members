@@ -1,12 +1,12 @@
 import eslint from 'eslint';
 import plugin from '../../src';
 
-let rule = plugin.rules['sort-class-members'];
-let defaultOptions = [ plugin.configs.recommended.rules['sort-class-members/sort-class-members'][1] ];
+const rule = plugin.rules['sort-class-members'];
+const defaultOptions = [ plugin.configs.recommended.rules['sort-class-members/sort-class-members'][1] ];
 
-let ruleTester = new eslint.RuleTester({ env: { es6: true }});
+const ruleTester = new eslint.RuleTester({ env: { es6: true }});
 
-let regexpOptions = [{
+const regexpOptions = [{
 	order: [
 		'before',
 		'/ab.+/',
@@ -15,7 +15,7 @@ let regexpOptions = [{
 	],
 }];
 
-let customGroupOptions = [{
+const customGroupOptions = [{
 	order: [
 		'[event-handlers]',
 		'constructor',
@@ -26,7 +26,7 @@ let customGroupOptions = [{
 	},
 }];
 
-let objectOrderOptions = [{
+const objectOrderOptions = [{
 	order: [
 		{ type: 'method' },
 		{ type: 'property', name: '/_.+' },
@@ -34,7 +34,7 @@ let objectOrderOptions = [{
 	],
 }];
 
-let nestedGroupOptions = [{
+const nestedGroupOptions = [{
 	order: [ 'a', '[outer]', 'd' ],
 	groups: {
 		'outer': [ 'b', '[inner]' ],
@@ -42,12 +42,12 @@ let nestedGroupOptions = [{
 	},
 }];
 
-let stopAfterFirstOptions = [{
+const stopAfterFirstOptions = [{
 	order: [ 'a', 'b', 'c' ],
 	stopAfterFirstProblem: true,
 }];
 
-let accessorOptions = [{
+const accessorOptions = [{
 	order: [
 		{ kind: 'get' },
 		{ kind: 'set' },
@@ -86,17 +86,17 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { a(){} b(){} c(){} d(){} }', options: nestedGroupOptions },
 
 		// undefined groups
-		{ code: 'class A { a(){} b(){} }', options: [{ order: [ 'a', '[blah]', 'b' ]}]},
+		{ code: 'class A { a(){} b(){} }', options: [{ order: [ 'a', '[blah]', 'b' ] }] },
 
 		// accessors
 		{ code: 'class A { get a(){} }', options: accessorOptions },
 		{ code: 'class A { get a(){} set a(v){} }', options: accessorOptions },
 		{ code: 'class A { set a(v){} }', options: accessorOptions },
 		{ code: 'class A { get a(){} b(){} }', options: accessorOptions },
-		{ code: 'class A { get a(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'getThenSet' }]},
-		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'together' }]},
-		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'setThenGet' }]},
-		{ code: 'class A { get a(){} get b(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'any' }]},
+		{ code: 'class A { get a(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'getThenSet' }] },
+		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'together' }] },
+		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'setThenGet' }] },
+		{ code: 'class A { get a(){} get b(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'any' }] },
 	],
 	invalid: [
 		{

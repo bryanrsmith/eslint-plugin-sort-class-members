@@ -1,4 +1,4 @@
-export let sortClassMembersSchema = [{
+export const sortClassMembersSchema = [{
 	type: 'object',
 	properties: {
 		order: { '$ref': '#/definitions/order' },
@@ -25,9 +25,9 @@ export let sortClassMembersSchema = [{
 						type: 'object',
 						properties: {
 							name: { type: 'string' },
-							type: { enum: [ 'method', 'property' ]},
+							type: { enum: [ 'method', 'property' ] },
 							static: { type: 'boolean' },
-							kind: { enum: [ 'get', 'set' ]},
+							kind: { enum: [ 'get', 'set' ] },
 						},
 						additionalProperties: false,
 					},
