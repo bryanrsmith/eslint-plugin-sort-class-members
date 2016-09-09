@@ -35,17 +35,17 @@
     "eslint": ">=0.8.0"
   },
   "devDependencies": {
-    "@bryanrsmith/eslint-config-standard": "2.1.3",
+    "@bryanrsmith/eslint-config-standard": "^2.1.3",
     "babel-cli": "^6.9.0",
     "babel-eslint": "^6.1.0",
-    "babel-plugin-istanbul": "2.0.1",
+    "babel-plugin-istanbul": "^2.0.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.9.0",
     "coveralls": "^2.11.9",
     "eslint": "^3.0.1",
     "mocha": "^3.0.2",
-    "nyc": "8.1.0",
+    "nyc": "^8.1.0",
     "release-script": "^1.0.2"
   },
   "engines": {
