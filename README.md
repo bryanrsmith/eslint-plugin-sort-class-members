@@ -96,6 +96,7 @@ Members can be matched to positional slots using several criteria, including nam
 * `name`: a string matching the name of the member. If the string starts and ends with `/` it will be interpreted as a regular expression. E.g., `"/_.+/"` will match members whose name starts with an underscore.
 * `type`: `"method"|"property"`. **Note**: Class properties currently require a custom parser like [babel-eslint](https://github.com/babel/babel-eslint).
 * `kind`: `"get"|"set"`. A subtype of `type: "method"` that can match getter or setter methods.
+* `propertyType`: A subtype of `type: "property"` that can match the type of the property value. e.g., `propertyType: "ArrowFunctionExpression"` to match properties whose value is initialized to an arrow function.
 * `accessorPair`: `true|false`. True to match only getters and setters that are part of a pair. i.e., only those that have both `get` and `set` methods defined.
 * `static`: `true|false` to restrict the match to static or instance members.
 
@@ -115,6 +116,7 @@ The following groups are provided by default:
 * `[accessor-pairs]`: matches getters and setters that are part of a pair (where both `get` and `set` methods are defined)
 * `[static-properties]`: matches all static properties
 * `[conventional-private-properties]`: matches properties whose name starts with an underscore
+* `[arrow-function-properties]`: matches properties whose value is initialized to an arrow function
 * `[methods]`: matches all methods
 * `[static-methods]`: matches all static methods
 * `[conventional-private-methods]`: matches methods whose name starts with an underscore
