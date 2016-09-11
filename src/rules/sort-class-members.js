@@ -105,17 +105,19 @@ function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
 function getMemberInfo(node, sourceCode) {
 	let name;
 	let type;
+	let propertyType;
 
 	if (node.type === 'ClassProperty') {
 		type = 'property';
 		const [ first, second ] = sourceCode.getFirstTokens(node, 2);
 		name = (second && second.type === 'Identifier') ? second.value : first.value;
+		propertyType = node.value ? node.value.type : node.value;
 	} else {
 		name = node.key.name;
 		type = 'method';
 	}
 
-	return { name, type, static: node.static, kind: node.kind, node };
+	return { name, type, static: node.static, kind: node.kind, propertyType, node };
 }
 
 function findAccessorPairProblems(members, positioning) {
@@ -285,6 +287,7 @@ const builtInGroups = {
 	'accessor-pairs': { accessorPair: true },
 	'static-properties': { type: 'property', static: true },
 	'conventional-private-properties': { type: 'property', name: '/_.+/' },
+	'arrow-function-properties': { propertyType: 'ArrowFunctionExpression' },
 	'methods': { type: 'method' },
 	'static-methods': { type: 'method', static: true },
 	'conventional-private-methods': { type: 'method', name: '/_.+/' },
@@ -297,4 +300,5 @@ const comparers = [
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
 	{ property: 'accessorPair', value: 20, test: (m, s) => s.accessorPair && m.matchingAccessor },
+	{ property: 'propertyType', value: 11, test: (m, s) => m.type === 'property' && s.propertyType === m.propertyType },
 ];

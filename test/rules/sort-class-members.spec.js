@@ -56,6 +56,14 @@ const accessorOptions = [{
 	],
 }];
 
+const propertyTypeOptions = [{
+	order: [
+		{ type: 'property', propertyType: 'Literal' },
+		{ type: 'property', propertyType: 'ArrowFunctionExpression' },
+		'[everything-else]',
+	],
+}];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -69,6 +77,7 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { static bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
 		{ code: 'class A { bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
 		{ code: 'class A { foo }', parser: 'babel-eslint', options: defaultOptions },
+		{ code: 'class A { foo = 1; bar = () => 2 }', parser: 'babel-eslint', options: propertyTypeOptions },
 
 		// regexp names
 		{ code: 'class A { before(){} abc(){} after(){} }', options: regexpOptions },
@@ -150,6 +159,17 @@ ruleTester.run('sort-class-members', rule, {
 			],
 			parser: 'babel-eslint',
 			options: defaultOptions,
+		},
+		{
+			code: 'class A { bar = () => 2; foo = 1; baz() {} }',
+			errors: [
+				{
+					message: 'Expected property foo to come before property bar.',
+					type: 'ClassProperty',
+				},
+			],
+			parser: 'babel-eslint',
+			options: propertyTypeOptions,
 		},
 		// regexp groups
 		{
