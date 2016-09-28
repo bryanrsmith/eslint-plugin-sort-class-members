@@ -7,6 +7,7 @@ module.exports = {
 	},
 	configs: {
 		recommended: {
+			plugins: [ 'sort-class-members' ],
 			rules: {
 				'sort-class-members/sort-class-members': [ 2, {
 					order: [
