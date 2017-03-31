@@ -124,6 +124,9 @@ The following groups are provided by default:
 
 **NOTE**: Currently only class properties using the proposed syntax are matched by `"type": "property"`. Properties added via assignment are not considered by this rule.
 
+## Autmatically fixing sort order
+Fixing of sort order related errors can be automated with the help of a codemod — [sort-class-members-codemod](https://github.com/pastelsky/sort-class-members-codemod)
+
 ## Acknowledgements
 Inspired by the `sort-comp` rule from [eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react).
 
