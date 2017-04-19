@@ -32,7 +32,7 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "eslint": ">=0.8.0"
+    "eslint": ">=3.0.0"
   },
   "devDependencies": {
     "@bryanrsmith/eslint-config-standard": "^2.1.3",
