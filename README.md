@@ -4,6 +4,8 @@
 
 # eslint-plugin-sort-class-members
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/bryanrsmith/eslint-plugin-sort-class-members.svg)](https://greenkeeper.io/)
+
 ESLint rule for enforcing consistent ES6 class member order.
 
 ## Installation
