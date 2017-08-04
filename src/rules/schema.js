@@ -1,4 +1,5 @@
 export const sortClassMembersSchema = [{
+	id: 'https://github.com/bryanrsmith/eslint-plugin-sort-class-members/v1',
 	type: 'object',
 	properties: {
 		order: { '$ref': '#/definitions/order' },
