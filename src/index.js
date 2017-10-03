@@ -7,20 +7,23 @@ module.exports = {
 	},
 	configs: {
 		recommended: {
-			plugins: [ 'sort-class-members' ],
+			plugins: ['sort-class-members'],
 			rules: {
-				'sort-class-members/sort-class-members': [ 2, {
-					order: [
-						'[static-properties]',
-						'[static-methods]',
-						'[properties]',
-						'[conventional-private-properties]',
-						'constructor',
-						'[methods]',
-						'[conventional-private-methods]',
-					],
-					accessorPairPositioning: 'getThenSet',
-				}],
+				'sort-class-members/sort-class-members': [
+					2,
+					{
+						order: [
+							'[static-properties]',
+							'[static-methods]',
+							'[properties]',
+							'[conventional-private-properties]',
+							'constructor',
+							'[methods]',
+							'[conventional-private-methods]',
+						],
+						accessorPairPositioning: 'getThenSet',
+					},
+				],
 			},
 		},
 	},

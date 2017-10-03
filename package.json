@@ -22,10 +22,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run lint && npm run test && rm -rf dist && babel src --out-dir dist",
+    "prebuild": "npm run lint && npm run prettier-check && npm run test",
+    "build": "rm -rf dist && babel src --out-dir dist",
     "test": "NODE_ENV=test nyc --reporter=lcov --reporter=text mocha test/**/*.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint src/ test/",
+    "prettier": "prettier --write './{src,test}/**/*.js'",
+    "prettier-check": "prettier --list-different './{src,test}/**/*.js'",
     "patch": "release patch",
     "minor": "release minor",
     "major": "release major"
@@ -44,8 +47,10 @@
     "babel-register": "^6.9.0",
     "coveralls": "^2.11.9",
     "eslint": "^3.0.1",
+    "eslint-config-prettier": "^2.6.0",
     "mocha": "^3.0.2",
     "nyc": "^8.1.0",
+    "prettier": "^1.7.3",
     "release-script": "^1.0.2"
   },
   "engines": {

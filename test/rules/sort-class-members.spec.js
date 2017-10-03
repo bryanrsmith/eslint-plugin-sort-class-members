@@ -2,82 +2,103 @@ import eslint from 'eslint';
 import plugin from '../../src';
 
 const rule = plugin.rules['sort-class-members'];
-const defaultOptions = [ plugin.configs.recommended.rules['sort-class-members/sort-class-members'][1] ];
+const defaultOptions = [
+	plugin.configs.recommended.rules['sort-class-members/sort-class-members'][1],
+];
 
-const ruleTester = new eslint.RuleTester({ env: { es6: true }});
+const ruleTester = new eslint.RuleTester({ env: { es6: true } });
 
-const regexpOptions = [{
-	order: [
-		'before',
-		'/ab.+/',
-		'after',
-		'[everything-else]',
-	],
-}];
-
-const customGroupOptions = [{
-	order: [
-		'[event-handlers]',
-		'constructor',
-		'[everything-else]',
-	],
-	groups: {
-		'event-handlers': [{ type: 'method', name: '/on.+/' }],
+const regexpOptions = [
+	{
+		order: ['before', '/ab.+/', 'after', '[everything-else]'],
 	},
-}];
+];
 
-const objectOrderOptions = [{
-	order: [
-		{ type: 'method' },
-		{ type: 'property', name: '/_.+' },
-		{ type: 'method', static: true },
-	],
-}];
-
-const nestedGroupOptions = [{
-	order: [ 'a', '[outer]', 'd' ],
-	groups: {
-		'outer': [ 'b', '[inner]' ],
-		'inner': [ 'c' ],
+const customGroupOptions = [
+	{
+		order: ['[event-handlers]', 'constructor', '[everything-else]'],
+		groups: {
+			'event-handlers': [{ type: 'method', name: '/on.+/' }],
+		},
 	},
-}];
+];
 
-const stopAfterFirstOptions = [{
-	order: [ 'a', 'b', 'c' ],
-	stopAfterFirstProblem: true,
-}];
+const objectOrderOptions = [
+	{
+		order: [
+			{ type: 'method' },
+			{ type: 'property', name: '/_.+' },
+			{ type: 'method', static: true },
+		],
+	},
+];
 
-const accessorOptions = [{
-	order: [
-		{ kind: 'get' },
-		{ kind: 'set' },
-		{ accessorPair: true },
-		'[everything-else]',
-	],
-}];
+const nestedGroupOptions = [
+	{
+		order: ['a', '[outer]', 'd'],
+		groups: {
+			outer: ['b', '[inner]'],
+			inner: ['c'],
+		},
+	},
+];
 
-const propertyTypeOptions = [{
-	order: [
-		{ type: 'property', propertyType: 'Literal' },
-		{ type: 'property', propertyType: 'ArrowFunctionExpression' },
-		'[everything-else]',
-	],
-}];
+const stopAfterFirstOptions = [
+	{
+		order: ['a', 'b', 'c'],
+		stopAfterFirstProblem: true,
+	},
+];
+
+const accessorOptions = [
+	{
+		order: [{ kind: 'get' }, { kind: 'set' }, { accessorPair: true }, '[everything-else]'],
+	},
+];
+
+const propertyTypeOptions = [
+	{
+		order: [
+			{ type: 'property', propertyType: 'Literal' },
+			{ type: 'property', propertyType: 'ArrowFunctionExpression' },
+			'[everything-else]',
+		],
+	},
+];
 
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
 		{ code: 'class A { static beforeCtor(){} constructor(){} }', options: defaultOptions },
-		{ code: 'class A { static beforeCtor(){} constructor(){} afterCtor(){} }', options: defaultOptions },
+		{
+			code: 'class A { static beforeCtor(){} constructor(){} afterCtor(){} }',
+			options: defaultOptions,
+		},
 		{ code: 'class A { constructor(){} afterCtor(){} }', options: defaultOptions },
 		{ code: 'class A { constructor(){} afterCtor(){} other(){} }', options: defaultOptions },
-		{ code: 'class A { static a = 1; static b(){} c = 2; _d = 3; constructor(){} e(){} }', parser: 'babel-eslint', options: defaultOptions },
+		{
+			code: 'class A { static a = 1; static b(){} c = 2; _d = 3; constructor(){} e(){} }',
+			parser: 'babel-eslint',
+			options: defaultOptions,
+		},
 
 		// class properties should work with babel-eslint
-		{ code: 'class A { static bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
-		{ code: 'class A { bar = 1; constructor(){} }', parser: 'babel-eslint', options: defaultOptions },
+		{
+			code: 'class A { static bar = 1; constructor(){} }',
+			parser: 'babel-eslint',
+			options: defaultOptions,
+		},
+		{
+			code: 'class A { bar = 1; constructor(){} }',
+			parser: 'babel-eslint',
+			options: defaultOptions,
+		},
 		{ code: 'class A { foo }', parser: 'babel-eslint', options: defaultOptions },
-		{ code: 'class A { foo = 1; bar = () => 2 }', parser: 'babel-eslint', options: propertyTypeOptions },
+		{
+			code: 'class A { foo = 1; bar = () => 2 }',
+			parser: 'babel-eslint',
+			options: propertyTypeOptions,
+		},
 
 		// regexp names
 		{ code: 'class A { before(){} abc(){} after(){} }', options: regexpOptions },
@@ -86,26 +107,46 @@ ruleTester.run('sort-class-members', rule, {
 		// custom groups
 		{ code: 'class A { onClick(){} constructor(){} }', options: customGroupOptions },
 		{ code: 'class A { onClick(){} abc(){} }', options: customGroupOptions },
-		{ code: 'class A { onClick(){} onChange(){} constructor(){} prop; }', parser: 'babel-eslint', options: customGroupOptions },
+		{
+			code: 'class A { onClick(){} onChange(){} constructor(){} prop; }',
+			parser: 'babel-eslint',
+			options: customGroupOptions,
+		},
 
 		// object config options
-		{ code: 'class A { a(){} _p = 1; static b(){} }', parser: 'babel-eslint', options: objectOrderOptions },
+		{
+			code: 'class A { a(){} _p = 1; static b(){} }',
+			parser: 'babel-eslint',
+			options: objectOrderOptions,
+		},
 
 		// nested groups
 		{ code: 'class A { a(){} b(){} c(){} d(){} }', options: nestedGroupOptions },
 
 		// undefined groups
-		{ code: 'class A { a(){} b(){} }', options: [{ order: [ 'a', '[blah]', 'b' ] }] },
+		{ code: 'class A { a(){} b(){} }', options: [{ order: ['a', '[blah]', 'b'] }] },
 
 		// accessors
 		{ code: 'class A { get a(){} }', options: accessorOptions },
 		{ code: 'class A { get a(){} set a(v){} }', options: accessorOptions },
 		{ code: 'class A { set a(v){} }', options: accessorOptions },
 		{ code: 'class A { get a(){} b(){} }', options: accessorOptions },
-		{ code: 'class A { get a(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'getThenSet' }] },
-		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'together' }] },
-		{ code: 'class A { get a(){} set b(v){} get b(){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'setThenGet' }] },
-		{ code: 'class A { get a(){} get b(){} set a(v){} }', options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'any' }] },
+		{
+			code: 'class A { get a(){} set a(v){} }',
+			options: [{ order: ['everything-else'], accessorPairPositioning: 'getThenSet' }],
+		},
+		{
+			code: 'class A { get a(){} set b(v){} get b(){} }',
+			options: [{ order: ['everything-else'], accessorPairPositioning: 'together' }],
+		},
+		{
+			code: 'class A { get a(){} set b(v){} get b(){} }',
+			options: [{ order: ['everything-else'], accessorPairPositioning: 'setThenGet' }],
+		},
+		{
+			code: 'class A { get a(){} get b(){} set a(v){} }',
+			options: [{ order: ['everything-else'], accessorPairPositioning: 'any' }],
+		},
 	],
 	invalid: [
 		{
@@ -292,7 +333,7 @@ ruleTester.run('sort-class-members', rule, {
 					type: 'MethodDefinition',
 				},
 			],
-			options: [{ order: [ 'everything-else' ], accessorPairPositioning: 'setThenGet' }],
+			options: [{ order: ['everything-else'], accessorPairPositioning: 'setThenGet' }],
 		},
 	],
 });

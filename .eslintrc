@@ -1,5 +1,5 @@
 {
-	"extends": "@bryanrsmith/eslint-config-standard",
+	"extends": ["@bryanrsmith/eslint-config-standard", "prettier"],
 	"parser": "babel-eslint",
 	"env": {
 		"es6": true,

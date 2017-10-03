@@ -12,13 +12,14 @@ export const sortClassMembers = {
 			const groupAccessors = accessorPairPositioning !== 'any';
 
 			return {
-				'ClassDeclaration'(node) {
+				ClassDeclaration(node) {
 					let members = getClassMemberInfos(node, context.getSourceCode(), orderedSlots);
 
 					// check for out-of-order and separated get/set pairs
 					const accessorPairProblems = findAccessorPairProblems(members, accessorPairPositioning);
 					for (const problem of accessorPairProblems) {
-						const message = 'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
+						const message =
+							'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
 
 						reportProblem({ problem, context, message, stopAfterFirst, problemCount });
 						if (stopAfterFirst) {
@@ -38,7 +39,14 @@ export const sortClassMembers = {
 					const problemCount = problems.length;
 					for (const problem of problems) {
 						const message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
-						reportProblem({ problem, message, context, stopAfterFirst, problemCount, groupAccessors });
+						reportProblem({
+							problem,
+							message,
+							context,
+							stopAfterFirst,
+							problemCount,
+							groupAccessors,
+						});
 
 						if (stopAfterFirst) {
 							break;
@@ -54,7 +62,14 @@ export const sortClassMembers = {
 	},
 };
 
-function reportProblem({ problem, message, context, stopAfterFirst, problemCount, groupAccessors }) {
+function reportProblem({
+	problem,
+	message,
+	context,
+	stopAfterFirst,
+	problemCount,
+	groupAccessors,
+}) {
 	const { source, target, expected } = problem;
 	const reportData = {
 		source: getMemberDescription(source, { groupAccessors }),
@@ -109,8 +124,8 @@ function getMemberInfo(node, sourceCode) {
 
 	if (node.type === 'ClassProperty') {
 		type = 'property';
-		const [ first, second ] = sourceCode.getFirstTokens(node, 2);
-		name = (second && second.type === 'Identifier') ? second.value : first.value;
+		const [first, second] = sourceCode.getFirstTokens(node, 2);
+		name = second && second.type === 'Identifier' ? second.value : first.value;
 		propertyType = node.value ? node.value.type : node.value;
 	} else {
 		name = node.key.name;
@@ -128,7 +143,8 @@ function findAccessorPairProblems(members, positioning) {
 
 	forEachPair(members, (first, second, firstIndex, secondIndex) => {
 		if (first.matchingAccessor === second.id) {
-			const outOfOrder = (positioning === 'getThenSet' && first.kind !== 'get') ||
+			const outOfOrder =
+				(positioning === 'getThenSet' && first.kind !== 'get') ||
 				(positioning === 'setThenGet' && first.kind !== 'set');
 			const outOfPosition = secondIndex - firstIndex !== 1;
 
@@ -207,9 +223,10 @@ function expandSlot(input, groups) {
 
 	let slot;
 	if (typeof input === 'string') {
-		slot = input[0] === '[' // check for [groupName] shorthand
-			? { group: input.substr(1, input.length - 2) }
-			: { name: input };
+		slot =
+			input[0] === '[' // check for [groupName] shorthand
+				? { group: input.substr(1, input.length - 2) }
+				: { name: input };
 	} else {
 		slot = { ...input };
 	}
@@ -228,7 +245,7 @@ function expandSlot(input, groups) {
 		slot.testName = testName;
 	}
 
-	return [ slot ];
+	return [slot];
 }
 
 function isAccessor({ kind }) {
@@ -281,14 +298,14 @@ function flatten(collection) {
 }
 
 const builtInGroups = {
-	'properties': { type: 'property' },
-	'getters': { kind: 'get' },
-	'setters': { kind: 'set' },
+	properties: { type: 'property' },
+	getters: { kind: 'get' },
+	setters: { kind: 'set' },
 	'accessor-pairs': { accessorPair: true },
 	'static-properties': { type: 'property', static: true },
 	'conventional-private-properties': { type: 'property', name: '/_.+/' },
 	'arrow-function-properties': { propertyType: 'ArrowFunctionExpression' },
-	'methods': { type: 'method' },
+	methods: { type: 'method' },
 	'static-methods': { type: 'method', static: true },
 	'conventional-private-methods': { type: 'method', name: '/_.+/' },
 	'everything-else': {},
@@ -300,5 +317,9 @@ const comparers = [
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
 	{ property: 'accessorPair', value: 20, test: (m, s) => s.accessorPair && m.matchingAccessor },
-	{ property: 'propertyType', value: 11, test: (m, s) => m.type === 'property' && s.propertyType === m.propertyType },
+	{
+		property: 'propertyType',
+		value: 11,
+		test: (m, s) => m.type === 'property' && s.propertyType === m.propertyType,
+	},
 ];
