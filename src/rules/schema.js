@@ -27,8 +27,10 @@ export const sortClassMembersSchema = [{
 						properties: {
 							name: { type: 'string' },
 							type: { enum: [ 'method', 'property' ] },
-							static: { type: 'boolean' },
 							kind: { enum: [ 'get', 'set' ] },
+							propertyType: { type: 'string' },
+							accessorPair: { type: 'boolean' },
+							static: { type: 'boolean' },
 						},
 						additionalProperties: false,
 					},

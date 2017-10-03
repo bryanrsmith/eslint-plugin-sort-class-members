@@ -92,7 +92,7 @@ The rule accepts the following configuration properties:
 }
 ```
 
-Members can be matched to positional slots using several criteria, including name (exact match or regexp), member type (method or property), and whether or not the member is static. Each match slot is described by an object with five properties, all of which are optional.
+Members can be matched to positional slots using several criteria, including name (exact match or regexp), member type (method or property), and whether or not the member is static. Each match slot is described by an object with six properties, all of which are optional.
 * `name`: a string matching the name of the member. If the string starts and ends with `/` it will be interpreted as a regular expression. E.g., `"/_.+/"` will match members whose name starts with an underscore.
 * `type`: `"method"|"property"`. **Note**: Class properties currently require a custom parser like [babel-eslint](https://github.com/babel/babel-eslint).
 * `kind`: `"get"|"set"`. A subtype of `type: "method"` that can match getter or setter methods.
