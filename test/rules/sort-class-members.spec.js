@@ -23,6 +23,22 @@ const customGroupOptions = [
 	},
 ];
 
+const accessorPairCustomGroupOptions = [
+	{
+		order: ['[conventional-private-getters]', '[methods]', '[conventional-private-methods]'],
+		groups: {
+			'conventional-private-getters': [
+				{
+					type: 'method',
+					kind: 'get',
+					accessorPair: false,
+					name: '/_.+/',
+				},
+			],
+		},
+	},
+];
+
 const objectOrderOptions = [
 	{
 		order: [
@@ -111,6 +127,10 @@ ruleTester.run('sort-class-members', rule, {
 			code: 'class A { onClick(){} onChange(){} constructor(){} prop; }',
 			parser: 'babel-eslint',
 			options: customGroupOptions,
+		},
+		{
+			code: 'class A { get _a() { return 1; } m() { return 2; } _p() { return 3; } }',
+			options: accessorPairCustomGroupOptions,
 		},
 
 		// object config options

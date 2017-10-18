@@ -316,7 +316,12 @@ const comparers = [
 	{ property: 'type', value: 10, test: (m, s) => s.type === m.type },
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
-	{ property: 'accessorPair', value: 20, test: (m, s) => s.accessorPair && m.matchingAccessor },
+	{
+		property: 'accessorPair',
+		value: 20,
+		test: (m, s) =>
+			(s.accessorPair && m.matchingAccessor) || (s.accessorPair === false && !m.matchingAccessor),
+	},
 	{
 		property: 'propertyType',
 		value: 11,
