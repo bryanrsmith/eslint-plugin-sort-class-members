@@ -35,7 +35,7 @@ export const sortClassMembers = {
 					members = members.filter(member => member.acceptableSlots.length);
 
 					// check member positions against rule order
-					const problems = findProblems(members, orderedSlots);
+					const problems = findProblems(members);
 					const problemCount = problems.length;
 					for (const problem of problems) {
 						const message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
@@ -179,17 +179,27 @@ function forEachPair(list, callback) {
 }
 
 function areMembersInCorrectOrder(first, second) {
-	return first.acceptableSlots.some(a => second.acceptableSlots.some(b => a <= b));
+	return first.acceptableSlots.some(a =>
+		second.acceptableSlots.some(
+			b =>
+				a.index === b.index && areSlotsAlphabeticallySorted(a, b)
+					? first.name.localeCompare(second.name) <= 0
+					: a.index <= b.index
+		)
+	);
+}
+
+function areSlotsAlphabeticallySorted(a, b) {
+	return a.sort === 'alphabetical' && b.sort === 'alphabetical';
 }
 
 function getAcceptableSlots(memberInfo, orderedSlots) {
 	return orderedSlots
-		.map((slot, index) => ({ score: scoreMember(memberInfo, slot), index })) // check member against each slot
+		.map((slot, index) => ({ index, score: scoreMember(memberInfo, slot), sort: slot.sort })) // check member against each slot
 		.filter(({ score }) => score > 0) // discard slots that don't match
 		.sort((a, b) => b.score - a.score) // sort best matching slots first
 		.filter(({ score }, i, array) => score === array[0].score) // take top scoring slots
-		.map(({ index }) => index) // we only need an array of slot indexes
-		.sort();
+		.sort('index');
 }
 
 function scoreMember(memberInfo, slot) {
@@ -298,6 +308,7 @@ function flatten(collection) {
 }
 
 const builtInGroups = {
+	constructor: { name: 'constructor', type: 'method' },
 	properties: { type: 'property' },
 	getters: { kind: 'get' },
 	setters: { kind: 'set' },
