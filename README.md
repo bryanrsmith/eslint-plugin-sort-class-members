@@ -99,6 +99,7 @@ Members can be matched to positional slots using several criteria, including nam
 * `propertyType`: A subtype of `type: "property"` that can match the type of the property value. e.g., `propertyType: "ArrowFunctionExpression"` to match properties whose value is initialized to an arrow function.
 * `accessorPair`: `true|false`. True to match only getters and setters that are part of a pair. i.e., only those that have both `get` and `set` methods defined.
 * `static`: `true|false` to restrict the match to static or instance members.
+* `sort`: `"alphabetical"|"none"`. Used to require a specific sorting within the slot for matched members. Defaults to `"none"`.
 
 A few examples:
 
@@ -106,6 +107,7 @@ A few examples:
 * `{ "static": true }` would match all static methods and properties.
 * `{ "name": "/on.+/", "type": "method" }` would match both static and instance methods whose names start with "on".
 * `"/on.+/"` is shorthand for `{ "name": "/on.+/" }`, and would match all static and instance methods and properties whose names start with "on".
+* `{ "type": "method", "sort": "alphabetical" }` would match all methods, and enforce an alphabetical sort.
 
 **Note**: You can simply use a string if you only want to match on the name.
 
