@@ -39,6 +39,20 @@ const accessorPairCustomGroupOptions = [
 	},
 ];
 
+const alphabeticalOptions = [
+	{
+		order: ['[constructor]', '[methods]'],
+		groups: {
+			methods: [
+				{
+					sort: 'alphabetical',
+					type: 'method',
+				},
+			],
+		},
+	},
+];
+
 const objectOrderOptions = [
 	{
 		order: [
@@ -166,6 +180,10 @@ ruleTester.run('sort-class-members', rule, {
 		{
 			code: 'class A { get a(){} get b(){} set a(v){} }',
 			options: [{ order: ['everything-else'], accessorPairPositioning: 'any' }],
+		},
+		{
+			code: 'class A { constructor(){} a(){} b(){} c(){} }',
+			options: alphabeticalOptions,
 		},
 	],
 	invalid: [
@@ -354,6 +372,16 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: [{ order: ['everything-else'], accessorPairPositioning: 'setThenGet' }],
+		},
+		{
+			code: 'class A { constructor(){} b(){} a(){} c(){} }',
+			errors: [
+				{
+					message: 'Expected method a to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: alphabeticalOptions,
 		},
 	],
 });
