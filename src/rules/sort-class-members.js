@@ -199,7 +199,7 @@ function getAcceptableSlots(memberInfo, orderedSlots) {
 		.filter(({ score }) => score > 0) // discard slots that don't match
 		.sort((a, b) => b.score - a.score) // sort best matching slots first
 		.filter(({ score }, i, array) => score === array[0].score) // take top scoring slots
-		.sort('index');
+		.sort((a, b) => b.index - a.index);
 }
 
 function scoreMember(memberInfo, slot) {
