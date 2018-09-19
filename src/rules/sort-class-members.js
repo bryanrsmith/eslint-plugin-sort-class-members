@@ -11,7 +11,7 @@ export const sortClassMembers = {
 			const orderedSlots = getExpectedOrder(order, groups);
 			const groupAccessors = accessorPairPositioning !== 'any';
 
-			return {
+			const rules = {
 				ClassDeclaration(node) {
 					let members = getClassMemberInfos(node, context.getSourceCode(), orderedSlots);
 
@@ -54,6 +54,10 @@ export const sortClassMembers = {
 					}
 				},
 			};
+
+			rules.ClassExpression = rules.ClassDeclaration;
+
+			return rules;
 		}
 
 		sortClassMembersRule.schema = sortClassMembersSchema;
