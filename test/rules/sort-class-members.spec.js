@@ -185,6 +185,9 @@ ruleTester.run('sort-class-members', rule, {
 			code: 'class A { constructor(){} a(){} b(){} c(){} }',
 			options: alphabeticalOptions,
 		},
+
+		// Class expressions
+		{ code: 'module.exports = class A {}', options: defaultOptions },
 	],
 	invalid: [
 		{
@@ -382,6 +385,18 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: alphabeticalOptions,
+		},
+
+		// Class expressions
+		{
+			code: 'module.exports = class A { constructor(){} static beforeCtor(){} }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
 		},
 	],
 });
