@@ -1,4 +1,5 @@
 import { sortClassMembersSchema } from './schema';
+import astUtils from 'eslint/lib/util/ast-utils';
 
 export const sortClassMembers = {
 	getRule(defaults = {}) {
@@ -61,7 +62,7 @@ export const sortClassMembers = {
 		}
 
 		sortClassMembersRule.schema = sortClassMembersSchema;
-
+		sortClassMembersRule.fixable = "code";
 		return sortClassMembersRule;
 	},
 };
@@ -87,7 +88,37 @@ function reportProblem({
 		reportData.problem = problemCount === 2 ? 'problem' : 'problems';
 	}
 
-	context.report({ node: source.node, message, data: reportData });
+	context.report({
+		node: source.node, message, data: reportData,
+		fix(fixer) {
+			const fixes = [];
+			if (expected !== 'before' && expected !== 'after') {
+				return fixes;
+			}
+			const sourceCode = context.getSourceCode();
+			const sourceAfterToken = sourceCode.getTokenAfter(source.node);
+			const sourceJSDoc = sourceCode.getCommentsBefore(source.node).slice(-1).pop();
+			const targetJSDoc = sourceCode.getCommentsBefore(target.node).slice(-1).pop();
+			const insertTargetNode = targetJSDoc || target.node;
+			if (sourceJSDoc) {
+				fixes.push(fixer.remove(sourceJSDoc));
+				if (expected === 'before') {
+					fixes.push(fixer.insertTextBefore(insertTargetNode, `${context.getSourceCode().getText(sourceJSDoc)}\n`));
+				} else {
+					fixes.push(fixer.insertTextAfter(insertTargetNode, `\n${context.getSourceCode().getText(sourceJSDoc)}`));
+				}
+			}
+
+			const memberSeperator = astUtils.isTokenOnSameLine(source.node, sourceAfterToken) ? ' ' : '\n';
+			fixes.push(fixer.remove(source.node));
+			if (expected === 'before') {
+				fixes.push(fixer.insertTextBefore(insertTargetNode, `${context.getSourceCode().getText(source.node)}${memberSeperator}`));
+			} else {
+				fixes.push(fixer.insertTextAfter(insertTargetNode, `${memberSeperator}${context.getSourceCode().getText(source.node)}`));
+			}
+			return fixes;
+		}
+	});
 }
 
 function getMemberDescription(member, { groupAccessors }) {
