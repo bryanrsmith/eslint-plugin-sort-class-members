@@ -33,6 +33,7 @@ export const sortClassMembersSchema = [
 								accessorPair: { type: 'boolean' },
 								sort: { enum: ['alphabetical', 'none'] },
 								static: { type: 'boolean' },
+								async: { type: 'boolean' },
 							},
 							additionalProperties: false,
 						},
