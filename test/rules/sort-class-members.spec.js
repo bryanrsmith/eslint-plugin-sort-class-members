@@ -460,5 +460,76 @@ ruleTester.run('sort-class-members', rule, {
 			],
 			options: defaultOptions,
 		},
+		// decorators
+		{
+			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
+			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}   }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
+			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}   }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code: 'module.exports = class A { constructor(){} @moveThis @andThis static beforeCtor(){} }',
+			output:
+				'module.exports = class A { @moveThis @andThis static beforeCtor(){} constructor(){}    }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code:
+				'module.exports = class A { constructor(){} /** move the comment */ @moveThis @andThis static beforeCtor(){} }',
+			output:
+				'module.exports = class A { /** move the comment */ @moveThis @andThis static beforeCtor(){} constructor(){}     }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code:
+				'module.exports = class A { constructor(){} /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} }',
+			output:
+				'module.exports = class A { /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} constructor(){}       }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
 	],
 });

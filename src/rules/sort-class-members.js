@@ -1,5 +1,4 @@
 import { sortClassMembersSchema } from './schema';
-import astUtils from 'eslint/lib/util/ast-utils';
 
 export const sortClassMembers = {
 	getRule(defaults = {}) {
@@ -94,11 +93,12 @@ function reportProblem({
 		data: reportData,
 		fix(fixer) {
 			const fixes = [];
-			if (expected !== 'before' && expected !== 'after') {
-				return fixes;
+			if (expected !== 'before') {
+				return fixes; // after almost never occurs, and when it does it causes conflicts
 			}
 			const sourceCode = context.getSourceCode();
 			const sourceAfterToken = sourceCode.getTokenAfter(source.node);
+
 			const sourceJSDoc = sourceCode
 				.getCommentsBefore(source.node)
 				.slice(-1)
@@ -107,48 +107,57 @@ function reportProblem({
 				.getCommentsBefore(target.node)
 				.slice(-1)
 				.pop();
-			const insertTargetNode = targetJSDoc || target.node;
-			if (sourceJSDoc) {
-				fixes.push(fixer.remove(sourceJSDoc));
-				if (expected === 'before') {
-					fixes.push(
-						fixer.insertTextBefore(
-							insertTargetNode,
-							`${context.getSourceCode().getText(sourceJSDoc)}\n`
-						)
-					);
-				} else {
-					fixes.push(
-						fixer.insertTextAfter(
-							insertTargetNode,
-							`\n${context.getSourceCode().getText(sourceJSDoc)}`
-						)
+			const decorators = target.node.decorators || [];
+			const targetDecorator = decorators.slice(-1).pop() || {};
+			const insertTargetNode = targetJSDoc || targetDecorator.node || target.node;
+			const sourceDecorators = source.node.decorators || [];
+			const sourceText = [];
+			for (let i = 0; i < sourceDecorators.length; i++) {
+				const decoratorComment = sourceCode
+					.getCommentsBefore(sourceDecorators[i])
+					.slice(-1)
+					.pop();
+				const hasNext = i < sourceDecorators.length - 1;
+				if (decoratorComment) {
+					fixes.push(fixer.remove(decoratorComment));
+					sourceText.push(
+						`${sourceCode.getText(decoratorComment)}${determineNodeSeperator(
+							decoratorComment,
+							sourceDecorators[i]
+						)}`
 					);
 				}
+				fixes.push(fixer.remove(sourceDecorators[i]));
+				sourceText.push(
+					`${sourceCode.getText(sourceDecorators[i])}${determineNodeSeperator(
+						sourceDecorators[i],
+						hasNext ? sourceDecorators[i + 1] : source.node
+					)}`
+				);
+			}
+			if (sourceJSDoc) {
+				fixes.push(fixer.remove(sourceJSDoc));
+				sourceText.push(
+					`${sourceCode.getText(sourceJSDoc)}${determineNodeSeperator(sourceJSDoc, source.node)}`
+				);
 			}
 
-			const memberSeperator = astUtils.isTokenOnSameLine(source.node, sourceAfterToken)
-				? ' '
-				: '\n';
 			fixes.push(fixer.remove(source.node));
-			if (expected === 'before') {
-				fixes.push(
-					fixer.insertTextBefore(
-						insertTargetNode,
-						`${context.getSourceCode().getText(source.node)}${memberSeperator}`
-					)
-				);
-			} else {
-				fixes.push(
-					fixer.insertTextAfter(
-						insertTargetNode,
-						`${memberSeperator}${context.getSourceCode().getText(source.node)}`
-					)
-				);
-			}
+			sourceText.push(
+				`${sourceCode.getText(source.node)}${determineNodeSeperator(source.node, sourceAfterToken)}`
+			);
+			fixes.push(fixer.insertTextBefore(insertTargetNode, sourceText.join('')));
 			return fixes;
 		},
 	});
+}
+
+function determineNodeSeperator(first, second) {
+	return isTokenOnSameLine(first, second) ? ' ' : '\n';
+}
+
+function isTokenOnSameLine(left, right) {
+	return left.loc.end.line === right.loc.start.line;
 }
 
 function getMemberDescription(member, { groupAccessors }) {
@@ -245,10 +254,11 @@ function forEachPair(list, callback) {
 
 function areMembersInCorrectOrder(first, second) {
 	return first.acceptableSlots.some(a =>
-		second.acceptableSlots.some(b =>
-			a.index === b.index && areSlotsAlphabeticallySorted(a, b)
-				? first.name.localeCompare(second.name) <= 0
-				: a.index <= b.index
+		second.acceptableSlots.some(
+			b =>
+				a.index === b.index && areSlotsAlphabeticallySorted(a, b)
+					? first.name.localeCompare(second.name) <= 0
+					: a.index <= b.index
 		)
 	);
 }
