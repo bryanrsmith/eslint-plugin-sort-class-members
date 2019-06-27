@@ -59,6 +59,7 @@ const objectOrderOptions = [
 			{ type: 'method' },
 			{ type: 'property', name: '/_.+' },
 			{ type: 'method', static: true },
+			{ type: 'method', async: true },
 		],
 	},
 ];
@@ -149,7 +150,7 @@ ruleTester.run('sort-class-members', rule, {
 
 		// object config options
 		{
-			code: 'class A { a(){} _p = 1; static b(){} }',
+			code: 'class A { a(){} _p = 1; static b(){} async c(){} }',
 			parser: 'babel-eslint',
 			options: objectOrderOptions,
 		},
@@ -530,6 +531,18 @@ ruleTester.run('sort-class-members', rule, {
 			options: defaultOptions,
 			parser: 'babel-eslint',
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		// object config options
+		{
+			code: 'class A { a(){} _p = 1; async b(){} static c(){} }',
+			parser: 'babel-eslint',
+			errors: [
+				{
+					message: 'Expected static method c to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: objectOrderOptions,
 		},
 	],
 });

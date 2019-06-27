@@ -99,12 +99,14 @@ Members can be matched to positional slots using several criteria, including nam
 * `propertyType`: A subtype of `type: "property"` that can match the type of the property value. e.g., `propertyType: "ArrowFunctionExpression"` to match properties whose value is initialized to an arrow function.
 * `accessorPair`: `true|false`. True to match only getters and setters that are part of a pair. i.e., only those that have both `get` and `set` methods defined.
 * `static`: `true|false` to restrict the match to static or instance members.
+* `async`: `true|false` to restrict the match to async members.
 * `sort`: `"alphabetical"|"none"`. Used to require a specific sorting within the slot for matched members. Defaults to `"none"`.
 
 A few examples:
 
 * `{ "name": "create", "type": "method", "static": true }` would match a static method named `create`.
 * `{ "static": true }` would match all static methods and properties.
+* `{ "async": true }` would match all async methods.
 * `{ "name": "/on.+/", "type": "method" }` would match both static and instance methods whose names start with "on".
 * `"/on.+/"` is shorthand for `{ "name": "/on.+/" }`, and would match all static and instance methods and properties whose names start with "on".
 * `{ "type": "method", "sort": "alphabetical" }` would match all methods, and enforce an alphabetical sort.
@@ -121,6 +123,7 @@ The following groups are provided by default:
 * `[arrow-function-properties]`: matches properties whose value is initialized to an arrow function
 * `[methods]`: matches all methods
 * `[static-methods]`: matches all static methods
+* `[async-methods]`: matches all async methods
 * `[conventional-private-methods]`: matches methods whose name starts with an underscore
 * `[everything-else]`: matches all class members not matched by any other rule
 

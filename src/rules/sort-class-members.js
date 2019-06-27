@@ -195,6 +195,7 @@ function getMemberInfo(node, sourceCode) {
 	let name;
 	let type;
 	let propertyType;
+	let async = false;
 
 	if (node.type === 'ClassProperty') {
 		type = 'property';
@@ -204,9 +205,10 @@ function getMemberInfo(node, sourceCode) {
 	} else {
 		name = node.key.name;
 		type = 'method';
+		async = node.value && node.value.async;
 	}
 
-	return { name, type, static: node.static, kind: node.kind, propertyType, node };
+	return { name, type, static: node.static, async, kind: node.kind, propertyType, node };
 }
 
 function findAccessorPairProblems(members, positioning) {
@@ -392,6 +394,7 @@ const builtInGroups = {
 	'arrow-function-properties': { propertyType: 'ArrowFunctionExpression' },
 	methods: { type: 'method' },
 	'static-methods': { type: 'method', static: true },
+	'async-methods': { type: 'method', async: true },
 	'conventional-private-methods': { type: 'method', name: '/_.+/' },
 	'everything-else': {},
 };
@@ -400,6 +403,7 @@ const comparers = [
 	{ property: 'name', value: 100, test: (m, s) => s.testName(m.name) },
 	{ property: 'type', value: 10, test: (m, s) => s.type === m.type },
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
+	{ property: 'async', value: 10, test: (m, s) => s.async === m.async },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
 	{
 		property: 'accessorPair',
