@@ -193,6 +193,7 @@ ruleTester.run('sort-class-members', rule, {
 	invalid: [
 		{
 			code: 'class A { constructor(){} static beforeCtor(){} }',
+			output: 'class A { static beforeCtor(){} constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -203,6 +204,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { constructor(){} _other(){} afterCtor(){} }',
+			output: 'class A { constructor(){} afterCtor(){} _other(){}  }',
 			errors: [
 				{
 					message: 'Expected method afterCtor to come before method _other.',
@@ -213,6 +215,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { _afterCtor(){} constructor(){} }',
+			output: 'class A { constructor(){} _afterCtor(){}  }',
 			errors: [
 				{
 					message: 'Expected constructor to come before method _afterCtor.',
@@ -223,6 +226,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { constructor(){} bar; }',
+			output: 'class A { bar; constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected property bar to come before constructor.',
@@ -234,6 +238,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { constructor(){} static bar; }',
+			output: 'class A { static bar; constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected static property bar to come before constructor.',
@@ -245,6 +250,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { bar = () => 2; foo = 1; baz() {} }',
+			output: 'class A { foo = 1; bar = () => 2;  baz() {} }',
 			errors: [
 				{
 					message: 'Expected property foo to come before property bar.',
@@ -257,6 +263,7 @@ ruleTester.run('sort-class-members', rule, {
 		// regexp groups
 		{
 			code: 'class A { abc(){} before(){} after(){} }',
+			output: 'class A { before(){} abc(){}  after(){} }',
 			errors: [
 				{
 					message: 'Expected method before to come before method abc.',
@@ -267,7 +274,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		// [everything-else] group
 		{
-			code: 'class A { xyz(){} before(){} after(){}; }',
+			code: 'class A { xyz(){} before(){} after(){}; }', // no output fixes cause conflicts
 			errors: [
 				{
 					message: 'Expected method before to come before method xyz.',
@@ -283,6 +290,7 @@ ruleTester.run('sort-class-members', rule, {
 		// custom group options
 		{
 			code: 'class A { constructor(){} onClick(){} }',
+			output: 'class A { onClick(){} constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected method onClick to come before constructor.',
@@ -294,6 +302,7 @@ ruleTester.run('sort-class-members', rule, {
 		// nested groups
 		{
 			code: 'class A { a(){} c(){} b(){} d(){} }',
+			output: 'class A { a(){} b(){} c(){}  d(){} }',
 			errors: [
 				{
 					message: 'Expected method b to come before method c.',
@@ -304,6 +313,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { b(){} c(){} a(){} }',
+			output: 'class A { a(){} b(){} c(){}  }',
 			errors: [
 				{
 					message: 'Expected method a to come before method b. (1 similar problem in this class)',
@@ -315,6 +325,7 @@ ruleTester.run('sort-class-members', rule, {
 		// accessors
 		{
 			code: 'class A { b(){} get a(){} }',
+			output: 'class A { get a(){} b(){}  }',
 			errors: [
 				{
 					message: 'Expected getter a to come before method b.',
@@ -325,6 +336,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { b(){} set a(v){} }',
+			output: 'class A { set a(v){} b(){}  }',
 			errors: [
 				{
 					message: 'Expected setter a to come before method b.',
@@ -334,7 +346,7 @@ ruleTester.run('sort-class-members', rule, {
 			options: accessorOptions,
 		},
 		{
-			code: 'class A { b(){} get a(){} set a(v){} }',
+			code: 'class A { b(){} get a(){} set a(v){} }', // no output fixes cause conflicts
 			errors: [
 				{
 					message: 'Expected accessor pair a to come before method b.',
@@ -344,7 +356,7 @@ ruleTester.run('sort-class-members', rule, {
 			options: accessorOptions,
 		},
 		{
-			code: 'class A { b(){} get a(){} c(){} set a(v){} }',
+			code: 'class A { b(){} get a(){} c(){} set a(v){} }', // no output fixes cause conflicts
 			errors: [
 				{
 					message: 'Expected accessor pair a to come before method b.',
@@ -359,6 +371,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { set a(v){} get a(){}  }',
+			output: 'class A { get a(){} set a(v){}   }',
 			errors: [
 				{
 					message: 'Expected getter a to come immediately before setter a.',
@@ -369,6 +382,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { get a(){} set a(v){} }',
+			output: 'class A { set a(v){} get a(){}  }',
 			errors: [
 				{
 					message: 'Expected setter a to come immediately before getter a.',
@@ -379,6 +393,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{
 			code: 'class A { constructor(){} b(){} a(){} c(){} }',
+			output: 'class A { constructor(){} a(){} b(){}  c(){} }',
 			errors: [
 				{
 					message: 'Expected method a to come before method b.',
@@ -391,6 +406,7 @@ ruleTester.run('sort-class-members', rule, {
 		// Class expressions
 		{
 			code: 'module.exports = class A { constructor(){} static beforeCtor(){} }',
+			output: 'module.exports = class A { static beforeCtor(){} constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -400,6 +416,122 @@ ruleTester.run('sort-class-members', rule, {
 			options: defaultOptions,
 		},
 
+		// fix tests
+		{
+			code: `class A {\n/**\n* jsdoc thing\n*/\nconstructor(){} \nstatic beforeCtor(){} \n}`,
+			output: `class A {\nstatic beforeCtor(){}\n/**\n* jsdoc thing\n*/\nconstructor(){} \n \n}`,
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+		},
+		{
+			code: `class A {\nconstructor(){}\n/**\n* jsdoc documentation\n*/\nstatic beforeCtor(){}\n}`,
+			output: `class A {\n/**\n* jsdoc documentation\n*/\nstatic beforeCtor(){}\nconstructor(){}\n\n\n}`,
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+		},
+		{
+			code: `class A { constructor(){}\n// documentation\nstatic beforeCtor(){}\n}`,
+			output: `class A { // documentation\nstatic beforeCtor(){}\nconstructor(){}\n\n\n}`,
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+		},
+		{
+			code: `class A { constructor(){}\n// documentation\nstatic beforeCtor(){}\n}`,
+			output: 'class A { // documentation\nstatic beforeCtor(){}\nconstructor(){}\n\n\n}',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+		},
+		// decorators
+		{
+			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
+			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}   }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
+			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}   }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code: 'module.exports = class A { constructor(){} @moveThis @andThis static beforeCtor(){} }',
+			output:
+				'module.exports = class A { @moveThis @andThis static beforeCtor(){} constructor(){}    }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code:
+				'module.exports = class A { constructor(){} /** move the comment */ @moveThis @andThis static beforeCtor(){} }',
+			output:
+				'module.exports = class A { /** move the comment */ @moveThis @andThis static beforeCtor(){} constructor(){}     }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code:
+				'module.exports = class A { constructor(){} /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} }',
+			output:
+				'module.exports = class A { /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} constructor(){}       }',
+			errors: [
+				{
+					message: 'Expected static method beforeCtor to come before constructor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: 'babel-eslint',
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
 		// object config options
 		{
 			code: 'class A { a(){} _p = 1; async b(){} static c(){} }',
