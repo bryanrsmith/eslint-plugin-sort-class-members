@@ -534,10 +534,8 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		// https://github.com/bryanrsmith/eslint-plugin-sort-class-members/issues/52
 		{
-			code:
-				`module.exports = class A { @moveThis afterCtor() {} constructor() {} }`,
-			output:
-				`module.exports = class A { constructor() {} @moveThis afterCtor() {}  }`,
+			code: `module.exports = class A { @moveThis afterCtor() {} constructor() {} }`,
+			output: `module.exports = class A { constructor() {} @moveThis afterCtor() {}  }`,
 			errors: [
 				{
 					message: 'Expected constructor to come before method afterCtor.',

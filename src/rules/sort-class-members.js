@@ -233,11 +233,10 @@ function forEachPair(list, callback) {
 
 function areMembersInCorrectOrder(first, second) {
 	return first.acceptableSlots.some(a =>
-		second.acceptableSlots.some(
-			b =>
-				a.index === b.index && areSlotsAlphabeticallySorted(a, b)
-					? first.name.localeCompare(second.name) <= 0
-					: a.index <= b.index
+		second.acceptableSlots.some(b =>
+			a.index === b.index && areSlotsAlphabeticallySorted(a, b)
+				? first.name.localeCompare(second.name) <= 0
+				: a.index <= b.index
 		)
 	);
 }
