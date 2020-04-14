@@ -110,31 +110,8 @@ function reportProblem({
 			const decorators = target.node.decorators || [];
 			const targetDecorator = decorators.slice(-1).pop() || {};
 			const insertTargetNode = targetJSDoc || targetDecorator.node || target.node;
-			const sourceDecorators = source.node.decorators || [];
 			const sourceText = [];
-			for (let i = 0; i < sourceDecorators.length; i++) {
-				const decoratorComment = sourceCode
-					.getCommentsBefore(sourceDecorators[i])
-					.slice(-1)
-					.pop();
-				const hasNext = i < sourceDecorators.length - 1;
-				if (decoratorComment) {
-					fixes.push(fixer.remove(decoratorComment));
-					sourceText.push(
-						`${sourceCode.getText(decoratorComment)}${determineNodeSeperator(
-							decoratorComment,
-							sourceDecorators[i]
-						)}`
-					);
-				}
-				fixes.push(fixer.remove(sourceDecorators[i]));
-				sourceText.push(
-					`${sourceCode.getText(sourceDecorators[i])}${determineNodeSeperator(
-						sourceDecorators[i],
-						hasNext ? sourceDecorators[i + 1] : source.node
-					)}`
-				);
-			}
+
 			if (sourceJSDoc) {
 				fixes.push(fixer.remove(sourceJSDoc));
 				sourceText.push(
