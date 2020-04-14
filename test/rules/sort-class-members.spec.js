@@ -109,25 +109,25 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { constructor(){} afterCtor(){} other(){} }', options: defaultOptions },
 		{
 			code: 'class A { static a = 1; static b(){} c = 2; _d = 3; constructor(){} e(){} }',
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: defaultOptions,
 		},
 
 		// class properties should work with babel-eslint
 		{
 			code: 'class A { static bar = 1; constructor(){} }',
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: defaultOptions,
 		},
 		{
 			code: 'class A { bar = 1; constructor(){} }',
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: defaultOptions,
 		},
-		{ code: 'class A { foo }', parser: 'babel-eslint', options: defaultOptions },
+		{ code: 'class A { foo }', parser: require.resolve('babel-eslint'), options: defaultOptions },
 		{
 			code: 'class A { foo = 1; bar = () => 2 }',
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: propertyTypeOptions,
 		},
 
@@ -140,7 +140,7 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { onClick(){} abc(){} }', options: customGroupOptions },
 		{
 			code: 'class A { onClick(){} onChange(){} constructor(){} prop; }',
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: customGroupOptions,
 		},
 		{
@@ -151,7 +151,7 @@ ruleTester.run('sort-class-members', rule, {
 		// object config options
 		{
 			code: 'class A { a(){} _p = 1; static b(){} async c(){} }',
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: objectOrderOptions,
 		},
 
@@ -233,7 +233,7 @@ ruleTester.run('sort-class-members', rule, {
 					type: 'ClassProperty',
 				},
 			],
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: defaultOptions,
 		},
 		{
@@ -245,7 +245,7 @@ ruleTester.run('sort-class-members', rule, {
 					type: 'ClassProperty',
 				},
 			],
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: defaultOptions,
 		},
 		{
@@ -257,7 +257,7 @@ ruleTester.run('sort-class-members', rule, {
 					type: 'ClassProperty',
 				},
 			],
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			options: propertyTypeOptions,
 		},
 		// regexp groups
@@ -464,7 +464,7 @@ ruleTester.run('sort-class-members', rule, {
 		// decorators
 		{
 			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
-			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}   }',
+			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -472,12 +472,12 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: defaultOptions,
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 		{
 			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
-			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}   }',
+			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -485,13 +485,13 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: defaultOptions,
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 		{
 			code: 'module.exports = class A { constructor(){} @moveThis @andThis static beforeCtor(){} }',
 			output:
-				'module.exports = class A { @moveThis @andThis static beforeCtor(){} constructor(){}    }',
+				'module.exports = class A { @moveThis @andThis static beforeCtor(){} constructor(){}  }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -499,14 +499,14 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: defaultOptions,
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 		{
 			code:
 				'module.exports = class A { constructor(){} /** move the comment */ @moveThis @andThis static beforeCtor(){} }',
 			output:
-				'module.exports = class A { /** move the comment */ @moveThis @andThis static beforeCtor(){} constructor(){}     }',
+				'module.exports = class A { /** move the comment */ @moveThis @andThis static beforeCtor(){} constructor(){}   }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -514,14 +514,14 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: defaultOptions,
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 		{
 			code:
 				'module.exports = class A { constructor(){} /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} }',
 			output:
-				'module.exports = class A { /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} constructor(){}       }',
+				'module.exports = class A { /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} constructor(){}   }',
 			errors: [
 				{
 					message: 'Expected static method beforeCtor to come before constructor.',
@@ -529,13 +529,29 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: defaultOptions,
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		// https://github.com/bryanrsmith/eslint-plugin-sort-class-members/issues/52
+		{
+			code:
+				`module.exports = class A { @moveThis afterCtor() {} constructor() {} }`,
+			output:
+				`module.exports = class A { constructor() {} @moveThis afterCtor() {}  }`,
+			errors: [
+				{
+					message: 'Expected constructor to come before method afterCtor.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 		// object config options
 		{
 			code: 'class A { a(){} _p = 1; async b(){} static c(){} }',
-			parser: 'babel-eslint',
+			parser: require.resolve('babel-eslint'),
 			errors: [
 				{
 					message: 'Expected static method c to come before method b.',
