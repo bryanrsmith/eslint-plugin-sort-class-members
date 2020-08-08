@@ -173,19 +173,30 @@ function getMemberInfo(node, sourceCode) {
 	let type;
 	let propertyType;
 	let async = false;
+	let decorators = [];
 
 	if (node.type === 'ClassProperty') {
 		type = 'property';
-		const [first, second] = sourceCode.getFirstTokens(node, 2);
+		const [first, second] = sourceCode.getFirstTokens(node.key, 2);
 		name = second && second.type === 'Identifier' ? second.value : first.value;
 		propertyType = node.value ? node.value.type : node.value;
+		decorators = (!!node.decorators && node.decorators.map(n => n.expression.name)) || [];
 	} else {
 		name = node.key.name;
 		type = 'method';
 		async = node.value && node.value.async;
 	}
 
-	return { name, type, static: node.static, async, kind: node.kind, propertyType, node };
+	return {
+		name,
+		type,
+		decorators,
+		static: node.static,
+		async,
+		kind: node.kind,
+		propertyType,
+		node,
+	};
 }
 
 function findAccessorPairProblems(members, positioning) {
@@ -381,6 +392,11 @@ const comparers = [
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
 	{ property: 'async', value: 10, test: (m, s) => s.async === m.async },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
+	{
+		property: 'groupByDecorator',
+		value: 10,
+		test: (m, s) => m.decorators.includes(s.groupByDecorator),
+	},
 	{
 		property: 'accessorPair',
 		value: 20,
