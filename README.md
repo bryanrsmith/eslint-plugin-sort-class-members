@@ -101,6 +101,7 @@ Members can be matched to positional slots using several criteria, including nam
 * `static`: `true|false` to restrict the match to static or instance members.
 * `async`: `true|false` to restrict the match to async members.
 * `sort`: `"alphabetical"|"none"`. Used to require a specific sorting within the slot for matched members. Defaults to `"none"`.
+* `groupByDecorator`: a string used to group properties with the same decorator name (e.g. `observable` for `@observable`). Can be used together with `sort`. **Note**: Decorators are a Stage 2 proposal and require a custom parser like [babel-eslint](https://github.com/babel/babel-eslint).
 
 A few examples:
 
