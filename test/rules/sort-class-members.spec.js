@@ -97,6 +97,24 @@ const propertyTypeOptions = [
 	},
 ];
 
+const decoratorOptions = [
+	{
+		order: ['[observables]', '[properties]'],
+		groups: {
+			observables: [{ type: 'property', groupByDecorator: 'observable' }],
+		},
+	},
+];
+
+const decoratorOptionsAlphabetical = [
+	{
+		order: ['[observables]', '[properties]'],
+		groups: {
+			observables: [{ type: 'property', groupByDecorator: 'observable', sort: 'alphabetical' }],
+		},
+	},
+];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -129,6 +147,21 @@ ruleTester.run('sort-class-members', rule, {
 			code: 'class A { foo = 1; bar = () => 2 }',
 			parser: require.resolve('babel-eslint'),
 			options: propertyTypeOptions,
+		},
+
+		// class properties with decorators
+		{
+			code: 'class A { @observable bar = 2; @observable baz = 1; foo = 3; constructor(){} }',
+			options: decoratorOptions,
+			parser: require.resolve('babel-eslint'),
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+
+		{
+			code: 'class A { @observable bar = 2; @observable foo = 1; baz = 3; constructor(){} }',
+			options: decoratorOptions,
+			parser: require.resolve('babel-eslint'),
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 
 		// regexp names
@@ -543,6 +576,32 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: defaultOptions,
+			parser: require.resolve('babel-eslint'),
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code: 'class A {  @observable bar = 2; baz = 3; @observable foo = 1; constructor(){} }',
+			output: 'class A {  @observable bar = 2; @observable foo = 1; baz = 3;  constructor(){} }',
+			errors: [
+				{
+					message: 'Expected property foo to come before property baz.',
+					type: 'ClassProperty',
+				},
+			],
+			options: decoratorOptions,
+			parser: require.resolve('babel-eslint'),
+			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
+		},
+		{
+			code: 'class A { @observable foo = 1; @observable bar = 2; constructor(){} }',
+			output: 'class A { @observable bar = 2; @observable foo = 1;  constructor(){} }',
+			errors: [
+				{
+					message: 'Expected property bar to come before property foo.',
+					type: 'ClassProperty',
+				},
+			],
+			options: decoratorOptionsAlphabetical,
 			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
