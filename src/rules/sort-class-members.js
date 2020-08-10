@@ -183,6 +183,11 @@ function getMemberInfo(node, sourceCode) {
 		decorators = (!!node.decorators && node.decorators.map(n => n.expression.name)) || [];
 	} else {
 		name = node.key.name;
+		if (!name) {
+		  const objectName = node.key.object ? node.key.object.name : '';
+		  const propertyName = node.key.property ? node.key.property.name : '';
+		  name = `[${objectName}${objectName && propertyName ? '.' : ''}${propertyName}]`;
+		}
 		type = 'method';
 		async = node.value && node.value.async;
 	}
