@@ -115,6 +115,19 @@ const decoratorOptionsAlphabetical = [
 	},
 ];
 
+const dynamicKeysCustomGroupOptions = [
+	{
+		order: ['[getters]', '[methods]', '[dynamic-name-methods]'],
+		groups: {
+			'dynamic-name-methods': [{
+				name: '/^\\[[^\\]]+\\]/',
+				type: 'method',
+				sort: 'alphabetical'
+			}],
+		},
+	},
+];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -617,5 +630,18 @@ ruleTester.run('sort-class-members', rule, {
 			],
 			options: objectOrderOptions,
 		},
+		// dynamic class names, https://github.com/bryanrsmith/eslint-plugin-sort-class-members/pull/59
+		{
+			code: `class A { [dynamic](){}\n[dynamic.name](){} get some(){}\n// documentation\nmethod(){}\n}`,
+			output: 'class A { get some(){}\n// documentation\nmethod(){}\n[dynamic](){}\n[dynamic.name](){}\n\n}',
+			errors: [
+				{
+					message: 'Expected dynamic named methods to come after method.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: defaultOptions,
+		},
+		dynamicKeysCustomGroupOptions
 	],
 });
