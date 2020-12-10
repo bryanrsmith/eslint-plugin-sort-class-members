@@ -139,7 +139,7 @@ The following groups are provided by default:
 
 Inspired by the `sort-comp` rule from [eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react).
 
-[ci-image]: https://img.shields.io/github/workflow/status/bryanrsmith/eslint-plugin-sort-class-members/ci/main?style=flat-square
+[ci-image]: https://img.shields.io/github/workflow/status/bryanrsmith/eslint-plugin-sort-class-members/CI/main?style=flat-square
 [ci-url]: https://github.com/bryanrsmith/eslint-plugin-sort-class-members/actions
 [coveralls-image]: https://img.shields.io/coveralls/bryanrsmith/eslint-plugin-sort-class-members/main.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/github/bryanrsmith/eslint-plugin-sort-class-members?branch=main
