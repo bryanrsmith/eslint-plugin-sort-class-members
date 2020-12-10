@@ -180,7 +180,6 @@ function getMemberInfo(node, sourceCode) {
 		const [first, second] = sourceCode.getFirstTokens(node.key, 2);
 		name = second && second.type === 'Identifier' ? second.value : first.value;
 		propertyType = node.value ? node.value.type : node.value;
-		decorators = (!!node.decorators && node.decorators.map(n => n.expression.name)) || [];
 		decorators =
 			(!!node.decorators &&
 				node.decorators.map(n =>
