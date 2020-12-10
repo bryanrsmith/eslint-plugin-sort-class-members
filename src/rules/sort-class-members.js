@@ -181,6 +181,12 @@ function getMemberInfo(node, sourceCode) {
 		name = second && second.type === 'Identifier' ? second.value : first.value;
 		propertyType = node.value ? node.value.type : node.value;
 		decorators = (!!node.decorators && node.decorators.map(n => n.expression.name)) || [];
+		decorators =
+			(!!node.decorators &&
+				node.decorators.map(n =>
+					n.expression.type === 'CallExpression' ? n.expression.callee.name : n.expression.name
+				)) ||
+			[];
 	} else {
 		name = node.key.name;
 		type = 'method';

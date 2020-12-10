@@ -99,9 +99,10 @@ const propertyTypeOptions = [
 
 const decoratorOptions = [
 	{
-		order: ['[observables]', '[properties]'],
+		order: ['[observables]', '[properties]', '[injects]'],
 		groups: {
 			observables: [{ type: 'property', groupByDecorator: 'observable' }],
+			injects: [{ type: 'property', groupByDecorator: 'Inject' }],
 		},
 	},
 ];
@@ -151,14 +152,16 @@ ruleTester.run('sort-class-members', rule, {
 
 		// class properties with decorators
 		{
-			code: 'class A { @observable bar = 2; @observable baz = 1; foo = 3; constructor(){} }',
+			code:
+				'class A { @observable bar = 2; @observable baz = 1; foo = 3; @Inject() hoge = 4; @observable @Inject() fuga = 5; constructor(){} }',
 			options: decoratorOptions,
 			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 
 		{
-			code: 'class A { @observable bar = 2; @observable foo = 1; baz = 3; constructor(){} }',
+			code:
+				'class A { @observable bar = 2; @observable foo = 1; @Inject() @observable fuga = 5; baz = 3; constructor(){}; @Inject() hoge = 4; }',
 			options: decoratorOptions,
 			parser: require.resolve('babel-eslint'),
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
@@ -580,11 +583,17 @@ ruleTester.run('sort-class-members', rule, {
 			parserOptions: { ecmaFeatures: { experimentalDecorators: true } },
 		},
 		{
-			code: 'class A {  @observable bar = 2; baz = 3; @observable foo = 1; constructor(){} }',
-			output: 'class A {  @observable bar = 2; @observable foo = 1; baz = 3;  constructor(){} }',
+			code:
+				'class A {  @observable bar = 2; baz = 3; @Inject() hoge = 4; @observable foo = 1; @observable @Inject() fuga = 5; constructor(){} }',
+			output:
+				'class A {  @observable bar = 2; @observable foo = 1; baz = 3; @Inject() hoge = 4;  @observable @Inject() fuga = 5; constructor(){} }',
 			errors: [
 				{
 					message: 'Expected property foo to come before property baz.',
+					type: 'ClassProperty',
+				},
+				{
+					message: 'Expected property foo to come before property hoge.',
 					type: 'ClassProperty',
 				},
 			],
