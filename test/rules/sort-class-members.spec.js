@@ -53,6 +53,36 @@ const alphabeticalOptions = [
 	},
 ];
 
+const alphabeticalLocaleENOptions = [
+	{
+		order: ['[constructor]', '[methods]'],
+		groups: {
+			methods: [
+				{
+					sort: 'alphabetical',
+					type: 'method',
+				},
+			],
+		},
+		locale: 'en-US'
+	},
+];
+
+const alphabeticalLocaleCSOptions = [
+	{
+		order: ['[constructor]', '[methods]'],
+		groups: {
+			methods: [
+				{
+					sort: 'alphabetical',
+					type: 'method',
+				},
+			],
+		},
+		locale: 'cs-CZ'
+	},
+];
+
 const objectOrderOptions = [
 	{
 		order: [
@@ -236,6 +266,14 @@ ruleTester.run('sort-class-members', rule, {
 		{
 			code: 'class A { constructor(){} a(){} b(){} c(){} }',
 			options: alphabeticalOptions,
+		},
+		{
+			code: 'class A { constructor(){} c(){} ch(){} h(){} }',
+			options: alphabeticalLocaleENOptions,
+		},
+		{
+			code: 'class A { constructor(){} c(){} h(){} ch(){} }',
+			options: alphabeticalLocaleCSOptions,
 		},
 
 		// Class expressions
@@ -452,6 +490,28 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: alphabeticalOptions,
+		},
+		{
+			code: 'class A { constructor(){} h(){} ch(){} i(){} }',
+			output: 'class A { constructor(){} ch(){} h(){}  i(){} }',
+			errors: [
+				{
+					message: 'Expected method ch to come before method h.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: alphabeticalLocaleENOptions,
+		},
+		{
+			code: 'class A { constructor(){} ch(){} h(){} i(){} }',
+			output: 'class A { constructor(){} h(){} ch(){}  i(){} }',
+			errors: [
+				{
+					message: 'Expected method h to come before method ch.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: alphabeticalLocaleCSOptions,
 		},
 
 		// Class expressions

@@ -16,6 +16,9 @@ export const sortClassMembersSchema = [
 			accessorPairPositioning: {
 				enum: ['getThenSet', 'setThenGet', 'together', 'any'],
 			},
+			locale: {
+				type: 'string',
+			},
 		},
 		definitions: {
 			order: {
