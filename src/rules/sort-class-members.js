@@ -192,7 +192,7 @@ function getMemberInfo(node, sourceCode) {
 			const keyAfterToken = sourceCode.getTokenAfter(node.key);
 			name = sourceCode.getText().slice(keyBeforeToken.range[0], keyAfterToken.range[1]);
 		} else {
-			name = sourceCode.getText(node.key);
+			name = node.key.name;
 		}
 		type = 'method';
 		async = node.value && node.value.async;
