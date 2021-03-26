@@ -116,6 +116,21 @@ const decoratorOptionsAlphabetical = [
 	},
 ];
 
+const computedMethodKeysCustomGroupOptions = [
+	{
+		order: ['constructor', '[computed-key-methods]'],
+		groups: {
+			'computed-key-methods': [
+				{
+					type: 'method',
+					name: '/^\\[[^\\]]+\\]$/',
+					sort: 'alphabetical',
+				},
+			],
+		},
+	},
+];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -625,6 +640,42 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: objectOrderOptions,
+		},
+		// computed method keys
+		{
+			code:
+				'module.exports.foo = Symbol("bar"); class A { [ module.exports.foo ]() {} constructor() {} }',
+			output:
+				'module.exports.foo = Symbol("bar"); class A { constructor() {} [ module.exports.foo ]() {}  }',
+			errors: [
+				{
+					message: 'Expected constructor to come before method [ module.exports.foo ].',
+					type: 'MethodDefinition',
+				},
+			],
+			options: computedMethodKeysCustomGroupOptions,
+		},
+		{
+			code: 'var foo = "bar"; class A { [`${foo} baz`]() {} constructor() {} }',
+			output: 'var foo = "bar"; class A { constructor() {} [`${foo} baz`]() {}  }',
+			errors: [
+				{
+					message: 'Expected constructor to come before method [`${foo} baz`].',
+					type: 'MethodDefinition',
+				},
+			],
+			options: computedMethodKeysCustomGroupOptions,
+		},
+		{
+			code: 'var foo = () => "bar"; class A { [foo()]() {} constructor() {} }',
+			output: 'var foo = () => "bar"; class A { constructor() {} [foo()]() {}  }',
+			errors: [
+				{
+					message: 'Expected constructor to come before method [foo()].',
+					type: 'MethodDefinition',
+				},
+			],
+			options: computedMethodKeysCustomGroupOptions,
 		},
 	],
 });

@@ -187,7 +187,13 @@ function getMemberInfo(node, sourceCode) {
 				)) ||
 			[];
 	} else {
-		name = node.key.name;
+		if (node.computed) {
+			const keyBeforeToken = sourceCode.getTokenBefore(node.key);
+			const keyAfterToken = sourceCode.getTokenAfter(node.key);
+			name = sourceCode.getText().slice(keyBeforeToken.range[0], keyAfterToken.range[1]);
+		} else {
+			name = sourceCode.getText(node.key);
+		}
 		type = 'method';
 		async = node.value && node.value.async;
 	}
