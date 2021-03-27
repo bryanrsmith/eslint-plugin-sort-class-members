@@ -64,22 +64,7 @@ const alphabeticalLocaleENOptions = [
 				},
 			],
 		},
-		locale: 'en-US'
-	},
-];
-
-const alphabeticalLocaleCSOptions = [
-	{
-		order: ['[constructor]', '[methods]'],
-		groups: {
-			methods: [
-				{
-					sort: 'alphabetical',
-					type: 'method',
-				},
-			],
-		},
-		locale: 'cs-CZ'
+		locale: 'en-US',
 	},
 ];
 
@@ -270,10 +255,6 @@ ruleTester.run('sort-class-members', rule, {
 		{
 			code: 'class A { constructor(){} c(){} ch(){} h(){} }',
 			options: alphabeticalLocaleENOptions,
-		},
-		{
-			code: 'class A { constructor(){} c(){} h(){} ch(){} }',
-			options: alphabeticalLocaleCSOptions,
 		},
 
 		// Class expressions
@@ -501,17 +482,6 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: alphabeticalLocaleENOptions,
-		},
-		{
-			code: 'class A { constructor(){} ch(){} h(){} i(){} }',
-			output: 'class A { constructor(){} h(){} ch(){}  i(){} }',
-			errors: [
-				{
-					message: 'Expected method h to come before method ch.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: alphabeticalLocaleCSOptions,
 		},
 
 		// Class expressions

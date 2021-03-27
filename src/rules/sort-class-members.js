@@ -236,9 +236,10 @@ function findAccessorPairProblems(members, positioning) {
 
 function findProblems(members, locale) {
 	const problems = [];
+	const collator = new Intl.Collator(locale);
 
 	forEachPair(members, (first, second) => {
-		if (!areMembersInCorrectOrder(first, second, locale)) {
+		if (!areMembersInCorrectOrder(first, second, collator)) {
 			problems.push({ source: second, target: first, expected: 'before' });
 		}
 	});
@@ -254,11 +255,11 @@ function forEachPair(list, callback) {
 	});
 }
 
-function areMembersInCorrectOrder(first, second, locale) {
+function areMembersInCorrectOrder(first, second, collator) {
 	return first.acceptableSlots.some(a =>
 		second.acceptableSlots.some(b =>
 			a.index === b.index && areSlotsAlphabeticallySorted(a, b)
-				? first.name.localeCompare(second.name, locale) <= 0
+				? collator.compare(first.name, second.name) <= 0
 				: a.index <= b.index
 		)
 	);
