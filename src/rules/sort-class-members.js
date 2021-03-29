@@ -10,6 +10,7 @@ export const sortClassMembers = {
 			const groups = { ...builtInGroups, ...defaults.groups, ...options.groups };
 			const orderedSlots = getExpectedOrder(order, groups);
 			const groupAccessors = accessorPairPositioning !== 'any';
+			const locale = options.locale || 'en-US';
 
 			const rules = {
 				ClassDeclaration(node) {
@@ -35,7 +36,7 @@ export const sortClassMembers = {
 					members = members.filter(member => member.acceptableSlots.length);
 
 					// check member positions against rule order
-					const problems = findProblems(members);
+					const problems = findProblems(members, locale);
 					const problemCount = problems.length;
 					for (const problem of problems) {
 						const message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
@@ -233,11 +234,12 @@ function findAccessorPairProblems(members, positioning) {
 	return problems;
 }
 
-function findProblems(members) {
+function findProblems(members, locale) {
 	const problems = [];
+	const collator = new Intl.Collator(locale);
 
 	forEachPair(members, (first, second) => {
-		if (!areMembersInCorrectOrder(first, second)) {
+		if (!areMembersInCorrectOrder(first, second, collator)) {
 			problems.push({ source: second, target: first, expected: 'before' });
 		}
 	});
@@ -253,11 +255,11 @@ function forEachPair(list, callback) {
 	});
 }
 
-function areMembersInCorrectOrder(first, second) {
+function areMembersInCorrectOrder(first, second, collator) {
 	return first.acceptableSlots.some(a =>
 		second.acceptableSlots.some(b =>
 			a.index === b.index && areSlotsAlphabeticallySorted(a, b)
-				? first.name.localeCompare(second.name) <= 0
+				? collator.compare(first.name, second.name) <= 0
 				: a.index <= b.index
 		)
 	);
