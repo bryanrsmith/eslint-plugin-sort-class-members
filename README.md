@@ -79,7 +79,7 @@ The rule accepts the following configuration properties:
 - `groups`: May optionally be used to created customized named groups of members so that `order` can be more easily maintained. Groups can be referenced by name by using square brackets. E.g., `"[group-name]"`.
 - `accessorPairPositioning`: Used to specify the required positioning of get/set pairs. Available values: `getThenSet`, `setThenGet`, `together`, `any`.
 - `stopAfterFirstProblem`: Only report the first sort problem in each class (plus the number of problems found). Useful if you only want to know that the class has sort problems without spamming error messages. The default is `false`.
-- `locale`: Used to specify the locale settings for the name comparsion method. [Language tags](https://www.techonthenet.com/js/language_tags.php). The default is `en-US`.
+- `locale`: Used to specify the locale for the name comparison method. The default is `en-US`.
 
 ```js
 {
