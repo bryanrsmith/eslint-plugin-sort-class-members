@@ -175,6 +175,7 @@ function getMemberInfo(node, sourceCode) {
 	let propertyType;
 	let async = false;
 	let decorators = [];
+	var isPrivate = node.accessibility === 'private';
 
 	if (node.type === 'ClassProperty') {
 		type = 'property';
@@ -205,6 +206,7 @@ function getMemberInfo(node, sourceCode) {
 		decorators,
 		static: node.static,
 		async,
+		private: isPrivate,
 		kind: node.kind,
 		propertyType,
 		node,
@@ -390,11 +392,15 @@ const builtInGroups = {
 	setters: { kind: 'set' },
 	'accessor-pairs': { accessorPair: true },
 	'static-properties': { type: 'property', static: true },
+	"public-properties": [{ "type": "property", "private": false }],
+	"private-properties": [{ "type": "property", "private": true }],
 	'conventional-private-properties': { type: 'property', name: '/_.+/' },
 	'arrow-function-properties': { propertyType: 'ArrowFunctionExpression' },
 	methods: { type: 'method' },
 	'static-methods': { type: 'method', static: true },
+	"public-methods": [{ "type": "method", "private": false }],
 	'async-methods': { type: 'method', async: true },
+	"private-methods": [{ "type": "method", "private": true }],
 	'conventional-private-methods': { type: 'method', name: '/_.+/' },
 	'everything-else': {},
 };
@@ -405,6 +411,7 @@ const comparers = [
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
 	{ property: 'async', value: 10, test: (m, s) => s.async === m.async },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
+	{ property: 'private', value: 10, test: (m, s) => s.private === m.private },
 	{
 		property: 'groupByDecorator',
 		value: 10,
