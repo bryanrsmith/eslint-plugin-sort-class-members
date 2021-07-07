@@ -30,10 +30,14 @@ Add `sort-class-members` to the plugins section of your `.eslintrc` configuratio
 				"order": [
 					"[static-properties]",
 					"[static-methods]",
+					"[publicProperties]",
+					"[privateProperties]"
 					"[properties]",
 					"[conventional-private-properties]",
 					"constructor",
 					"[methods]",
+					"[publicMethods]",
+					"[privateMethods]",
 					"[conventional-private-methods]"
 				],
 				"accessorPairPositioning": "getThenSet"
@@ -113,6 +117,7 @@ A few examples:
 - `{ "name": "create", "type": "method", "static": true }` would match a static method named `create`.
 - `{ "static": true }` would match all static methods and properties.
 - `{ "async": true }` would match all async methods.
+- `{ "type": "method", "private": true }` would match all private methods.
 - `{ "name": "/on.+/", "type": "method" }` would match both static and instance methods whose names start with "on".
 - `"/on.+/"` is shorthand for `{ "name": "/on.+/" }`, and would match all static and instance methods and properties whose names start with "on".
 - `{ "type": "method", "sort": "alphabetical" }` would match all methods, and enforce an alphabetical sort.
@@ -127,10 +132,14 @@ The following groups are provided by default:
 - `[accessor-pairs]`: matches getters and setters that are part of a pair (where both `get` and `set` methods are defined)
 - `[static-properties]`: matches all static properties
 - `[conventional-private-properties]`: matches properties whose name starts with an underscore
+- `[public-properties]`: matches properties with public or none accessor 
+- `[private-properties]`: matches properties with private accessor 
 - `[arrow-function-properties]`: matches properties whose value is initialized to an arrow function
 - `[methods]`: matches all methods
 - `[static-methods]`: matches all static methods
 - `[async-methods]`: matches all async methods
+- `[public-methods]`: matches methods with public or none accessor 
+- `[private-methods]`: matches methods with private accessor 
 - `[conventional-private-methods]`: matches methods whose name starts with an underscore
 - `[everything-else]`: matches all class members not matched by any other rule
 
