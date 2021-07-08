@@ -38,6 +38,7 @@ export const sortClassMembersSchema = [
 								sort: { enum: ['alphabetical', 'none'] },
 								static: { type: 'boolean' },
 								async: { type: 'boolean' },
+								private: { type: 'boolean' },
 							},
 							additionalProperties: false,
 						},
