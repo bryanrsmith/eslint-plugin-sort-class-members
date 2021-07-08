@@ -30,14 +30,14 @@ Add `sort-class-members` to the plugins section of your `.eslintrc` configuratio
 				"order": [
 					"[static-properties]",
 					"[static-methods]",
-					"[publicProperties]",
-					"[privateProperties]"
+					"[public-properties]",
+					"[private-properties]"
 					"[properties]",
 					"[conventional-private-properties]",
 					"constructor",
 					"[methods]",
-					"[publicMethods]",
-					"[privateMethods]",
+					"[public-methods]",
+					"[private-methods]",
 					"[conventional-private-methods]"
 				],
 				"accessorPairPositioning": "getThenSet"
