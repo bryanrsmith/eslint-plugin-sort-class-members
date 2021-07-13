@@ -6,7 +6,9 @@ const defaultOptions = [
 	plugin.configs.recommended.rules['sort-class-members/sort-class-members'][1],
 ];
 
-const ruleTester = new eslint.RuleTester({ env: { es6: true } });
+const tsParser = require.resolve("@typescript-eslint/parser");
+
+const ruleTester = new eslint.RuleTester({ parser: tsParser });
 
 const regexpOptions = [
 	{
@@ -146,6 +148,12 @@ const computedMethodKeysCustomGroupOptions = [
 	},
 ];
 
+const publicPrivateMethodsOptions = [
+	{
+		order: ['[public-methods]', '[private-methods]']
+	}
+]
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -259,6 +267,20 @@ ruleTester.run('sort-class-members', rule, {
 
 		// Class expressions
 		{ code: 'module.exports = class A {}', options: defaultOptions },
+
+		// Public and private methods
+		{ 
+			code: 'class A { a(){} b(){} private c(){} }',
+			options: publicPrivateMethodsOptions,
+		},
+		{ 
+			code: 'class A { public a(){} b(){} c(){} }',
+			options: publicPrivateMethodsOptions,
+		},
+		{ 
+			code: 'class A { a(){} public b(){} private c(){} }',
+			options: publicPrivateMethodsOptions,
+		}
 	],
 	invalid: [
 		{
@@ -706,6 +728,34 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: computedMethodKeysCustomGroupOptions,
+		},
+
+		// Public and private methods
+		{ 
+			code: 'class A { private a(){} b(){} c(){} }',
+			output: 'class A { b(){} private a(){}  c(){} }',
+			errors: [
+				{
+					message: 'Expected method b to come before method a.',
+					type: 'MethodDefinition',
+				},
+				{
+					message: 'Expected method c to come before method a.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: publicPrivateMethodsOptions,
+		},
+		{ 
+			code: 'class A { a(){} private b(){} c(){} }',
+			output: 'class A { a(){} c(){} private b(){}  }',
+			errors: [
+				{
+					message: 'Expected method c to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: publicPrivateMethodsOptions,
 		},
 	],
 });
