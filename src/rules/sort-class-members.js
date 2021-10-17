@@ -1,69 +1,73 @@
 import { sortClassMembersSchema } from './schema';
 
-export const sortClassMembers = {
-	getRule(defaults = {}) {
-		function sortClassMembersRule(context) {
-			const options = context.options[0] || {};
-			const stopAfterFirst = !!options.stopAfterFirstProblem;
-			const accessorPairPositioning = options.accessorPairPositioning || 'getThenSet';
-			const order = options.order || defaults.order || [];
-			const groups = { ...builtInGroups, ...defaults.groups, ...options.groups };
-			const orderedSlots = getExpectedOrder(order, groups);
-			const groupAccessors = accessorPairPositioning !== 'any';
-			const locale = options.locale || 'en-US';
+export const sortClassMembersRule = {
+	meta: {
+		type: 'suggestion',
+		docs: {
+			description: 'Enforce consistent members order',
+			category: 'Possible Errors',
+			recommended: false,
+			url: 'https://github.com/bryanrsmith/eslint-plugin-sort-class-members',
+		},
+		fixable: 'code',
+		schema: sortClassMembersSchema,
+	},
+	create: function sortClassMembersRule(context) {
+		const options = context.options[0] || {};
+		const stopAfterFirst = !!options.stopAfterFirstProblem;
+		const accessorPairPositioning = options.accessorPairPositioning || 'getThenSet';
+		const order = options.order || [];
+		const groups = { ...builtInGroups, ...options.groups };
+		const orderedSlots = getExpectedOrder(order, groups);
+		const groupAccessors = accessorPairPositioning !== 'any';
+		const locale = options.locale || 'en-US';
 
-			const rules = {
-				ClassDeclaration(node) {
-					let members = getClassMemberInfos(node, context.getSourceCode(), orderedSlots);
+		const rules = {
+			ClassDeclaration(node) {
+				let members = getClassMemberInfos(node, context.getSourceCode(), orderedSlots);
 
-					// check for out-of-order and separated get/set pairs
-					const accessorPairProblems = findAccessorPairProblems(members, accessorPairPositioning);
-					for (const problem of accessorPairProblems) {
-						const message =
-							'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
+				// check for out-of-order and separated get/set pairs
+				const accessorPairProblems = findAccessorPairProblems(members, accessorPairPositioning);
+				for (const problem of accessorPairProblems) {
+					const message = 'Expected {{ source }} to come immediately {{ expected }} {{ target }}.';
 
-						reportProblem({ problem, context, message, stopAfterFirst, problemCount });
-						if (stopAfterFirst) {
-							break;
-						}
+					reportProblem({ problem, context, message, stopAfterFirst, problemCount });
+					if (stopAfterFirst) {
+						break;
 					}
+				}
 
-					// filter out the second accessor in each pair so we only detect one problem
-					// for out-of-order	accessor pairs
-					members = members.filter(m => !(m.matchingAccessor && !m.isFirstAccessor));
+				// filter out the second accessor in each pair so we only detect one problem
+				// for out-of-order	accessor pairs
+				members = members.filter(m => !(m.matchingAccessor && !m.isFirstAccessor));
 
-					// ignore members that don't match any slots
-					members = members.filter(member => member.acceptableSlots.length);
+				// ignore members that don't match any slots
+				members = members.filter(member => member.acceptableSlots.length);
 
-					// check member positions against rule order
-					const problems = findProblems(members, locale);
-					const problemCount = problems.length;
-					for (const problem of problems) {
-						const message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
-						reportProblem({
-							problem,
-							message,
-							context,
-							stopAfterFirst,
-							problemCount,
-							groupAccessors,
-						});
+				// check member positions against rule order
+				const problems = findProblems(members, locale);
+				const problemCount = problems.length;
+				for (const problem of problems) {
+					const message = 'Expected {{ source }} to come {{ expected }} {{ target }}.';
+					reportProblem({
+						problem,
+						message,
+						context,
+						stopAfterFirst,
+						problemCount,
+						groupAccessors,
+					});
 
-						if (stopAfterFirst) {
-							break;
-						}
+					if (stopAfterFirst) {
+						break;
 					}
-				},
-			};
+				}
+			},
+		};
 
-			rules.ClassExpression = rules.ClassDeclaration;
+		rules.ClassExpression = rules.ClassDeclaration;
 
-			return rules;
-		}
-
-		sortClassMembersRule.schema = sortClassMembersSchema;
-		sortClassMembersRule.fixable = 'code';
-		return sortClassMembersRule;
+		return rules;
 	},
 };
 
