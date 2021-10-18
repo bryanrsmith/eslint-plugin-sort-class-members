@@ -442,34 +442,34 @@ ruleTester.run('sort-class-members', rule, {
 			],
 			options: accessorOptions,
 		},
-		// TODO: Make fix deterministic and uncomment test
-		// {
-		// 	code: 'class A { b(){} get a(){} set a(v){} }',
-		// 	output: 'class A { b(){} get a(){} set a(v){} }',
-		// 	errors: [
-		// 		{
-		// 			message: 'Expected accessor pair a to come before method b.',
-		// 			type: 'MethodDefinition',
-		// 		},
-		// 	],
-		// 	options: accessorOptions,
-		// },
-		// TODO: Make fix deterministic and uncomment test
-		// {
-		// 	code: 'class A { b(){} get a(){} c(){} set a(v){} }',
-		// 	output: 'class A { b(){} get a(){} c(){} set a(v){} }',
-		// 	errors: [
-		// 		{
-		// 			message: 'Expected accessor pair a to come before method b.',
-		// 			type: 'MethodDefinition',
-		// 		},
-		// 		{
-		// 			message: 'Expected setter a to come immediately after getter a.',
-		// 			type: 'MethodDefinition',
-		// 		},
-		// 	],
-		// 	options: accessorOptions,
-		// },
+		{
+			code: 'class A { b(){} get a(){} set a(v){} }',
+			// TODO: output asserts current behavior, which does not fully resolve the violation
+			output: 'class A { get a(){} b(){}  set a(v){} }',
+			errors: [
+				{
+					message: 'Expected accessor pair a to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: accessorOptions,
+		},
+		{
+			code: 'class A { b(){} get a(){} c(){} set a(v){} }',
+			// TODO: output asserts current behavior, which does not fully resolve the violation
+			output: 'class A { get a(){} b(){}  c(){} set a(v){} }',
+			errors: [
+				{
+					message: 'Expected accessor pair a to come before method b.',
+					type: 'MethodDefinition',
+				},
+				{
+					message: 'Expected setter a to come immediately after getter a.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: accessorOptions,
+		},
 		{
 			code: 'class A { set a(v){} get a(){}  }',
 			output: 'class A { get a(){} set a(v){}   }',
@@ -691,20 +691,19 @@ ruleTester.run('sort-class-members', rule, {
 			parserOptions,
 		},
 		// object config options
-		// TODO: Make fix deterministic and uncomment test
-		// {
-		// 	code: 'class A { a(){} _p = 1; async b(){} static c(){} }',
-		// 	output: 'class A { a(){} _p = 1; async b(){} static c(){} }',
-		// 	parser: require.resolve('@babel/eslint-parser'),
-		// 	parserOptions,
-		// 	errors: [
-		// 		{
-		// 			message: 'Expected static method c to come before method b.',
-		// 			type: 'MethodDefinition',
-		// 		},
-		// 	],
-		// 	options: objectOrderOptions,
-		// },
+		{
+			code: 'class A { a(){} _p = 1; async b(){} static c(){} }',
+			output: 'class A { a(){} _p = 1; static c(){} async b(){}  }',
+			parser: require.resolve('@babel/eslint-parser'),
+			parserOptions,
+			errors: [
+				{
+					message: 'Expected static method c to come before method b.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: objectOrderOptions,
+		},
 		// computed method keys
 		{
 			code:
