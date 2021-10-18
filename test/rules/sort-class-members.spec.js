@@ -8,15 +8,15 @@ const defaultOptions = [
 const parserOptions = {
 	babelOptions: {
 		plugins: [
-			["@babel/plugin-proposal-decorators", {legacy: true }],
-			["@babel/plugin-proposal-class-properties"]
-		]
+			['@babel/plugin-proposal-decorators', { legacy: true }],
+			['@babel/plugin-proposal-class-properties'],
+		],
 	},
 	ecmaFeatures: {
 		legacyDecorators: true,
 		experimentalDecorators: true,
 	},
-}
+};
 
 const ruleTester = new eslint.RuleTester({ env: { es6: true } });
 
@@ -192,7 +192,7 @@ ruleTester.run('sort-class-members', rule, {
 			code: 'class A { foo }',
 			parser: require.resolve('@babel/eslint-parser'),
 			parserOptions,
-			options: defaultOptions
+			options: defaultOptions,
 		},
 		{
 			code: 'class A { foo = 1; bar = () => 2 }',
