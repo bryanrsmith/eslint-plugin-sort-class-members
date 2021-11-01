@@ -185,10 +185,10 @@ function getMemberInfo(node, sourceCode) {
 		const [first, second] = sourceCode.getFirstTokens(node.key, 2);
 
 		if (node.key.type === 'PrivateName') {
-      name = `#${node.key.id.name}`;
-    } else {
-      name = second && second.type === 'Identifier' ? second.value : first.value;
-    }
+			name = `#${node.key.id.name}`;
+		} else {
+			name = second && second.type === 'Identifier' ? second.value : first.value;
+		}
 
 		propertyType = node.value ? node.value.type : node.value;
 		decorators =
@@ -203,11 +203,11 @@ function getMemberInfo(node, sourceCode) {
 			const keyAfterToken = sourceCode.getTokenAfter(node.key);
 			name = sourceCode.getText().slice(keyBeforeToken.range[0], keyAfterToken.range[1]);
 		} else {
-      if (node.key.type === 'PrivateName') {
-        name = `#${node.key.id.name}`;
-      } else {
-        name = node.key.name;
-      }
+			if (node.key.type === 'PrivateName') {
+				name = `#${node.key.id.name}`;
+			} else {
+				name = node.key.name;
+			}
 		}
 		type = 'method';
 		async = node.value && node.value.async;
