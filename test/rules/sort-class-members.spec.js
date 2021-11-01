@@ -158,61 +158,69 @@ const computedMethodKeysCustomGroupOptions = [
 	},
 ];
 
-const privateAlphabeticalProperties = [{
-	groups: {
-		"private-properties": [{
-			"sort": "alphabetical",
-			"static": false,
-			"type": "property",
-			"name": "/#.+/"
-		}],
+const privateAlphabeticalProperties = [
+	{
+		groups: {
+			'private-properties': [
+				{
+					sort: 'alphabetical',
+					static: false,
+					type: 'property',
+					name: '/#.+/',
+				},
+			],
+		},
+		order: ['[private-properties]'],
 	},
-	order: [
-		'[private-properties]'
-	],
-}];
+];
 
-const privateStaticAlphabeticalProperties = [{
-	groups: {
-		"private-static-properties": [{
-			"sort": "alphabetical",
-			"static": true,
-			"type": "property",
-			"name": "/#.+/"
-		}],
+const privateStaticAlphabeticalProperties = [
+	{
+		groups: {
+			'private-static-properties': [
+				{
+					sort: 'alphabetical',
+					static: true,
+					type: 'property',
+					name: '/#.+/',
+				},
+			],
+		},
+		order: ['[private-static-properties]'],
 	},
-	order: [
-		'[private-static-properties]'
-	],
-}];
+];
 
-const privateStaticAlphabeticalMethods = [{
-	groups: {
-		"private-static-methods": [{
-			"sort": "alphabetical",
-			"static": true,
-			"type": "method",
-			"name": "/#.+/"
-		}],
+const privateStaticAlphabeticalMethods = [
+	{
+		groups: {
+			'private-static-methods': [
+				{
+					sort: 'alphabetical',
+					static: true,
+					type: 'method',
+					name: '/#.+/',
+				},
+			],
+		},
+		order: ['[private-static-methods]'],
 	},
-	order: [
-		'[private-static-methods]'
-	],
-}];
+];
 
-const privateAlphabeticalMethods = [{
-	groups: {
-		"private-methods": [{
-			"sort": "alphabetical",
-			"static": false,
-			"type": "method",
-			"name": "/#.+/"
-		}],
+const privateAlphabeticalMethods = [
+	{
+		groups: {
+			'private-methods': [
+				{
+					sort: 'alphabetical',
+					static: false,
+					type: 'method',
+					name: '/#.+/',
+				},
+			],
+		},
+		order: ['[private-methods]'],
 	},
-	order: [
-		'[private-methods]'
-	],
-}];
+];
 
 ruleTester.run('sort-class-members', rule, {
 	valid: [
