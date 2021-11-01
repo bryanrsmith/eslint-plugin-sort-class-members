@@ -180,10 +180,16 @@ function getMemberInfo(node, sourceCode) {
 	let async = false;
 	let decorators = [];
 
-	if (node.type === 'ClassProperty') {
+	if (node.type === 'ClassProperty' || node.type === 'ClassPrivateProperty') {
 		type = 'property';
 		const [first, second] = sourceCode.getFirstTokens(node.key, 2);
-		name = second && second.type === 'Identifier' ? second.value : first.value;
+
+		if (node.key.type === 'PrivateName') {
+      name = `#${node.key.id.name}`;
+    } else {
+      name = second && second.type === 'Identifier' ? second.value : first.value;
+    }
+
 		propertyType = node.value ? node.value.type : node.value;
 		decorators =
 			(!!node.decorators &&
@@ -197,7 +203,11 @@ function getMemberInfo(node, sourceCode) {
 			const keyAfterToken = sourceCode.getTokenAfter(node.key);
 			name = sourceCode.getText().slice(keyBeforeToken.range[0], keyAfterToken.range[1]);
 		} else {
-			name = node.key.name;
+      if (node.key.type === 'PrivateName') {
+        name = `#${node.key.id.name}`;
+      } else {
+        name = node.key.name;
+      }
 		}
 		type = 'method';
 		async = node.value && node.value.async;

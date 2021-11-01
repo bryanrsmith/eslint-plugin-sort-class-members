@@ -158,6 +158,62 @@ const computedMethodKeysCustomGroupOptions = [
 	},
 ];
 
+const privateAlphabeticalProperties = [{
+	groups: {
+		"private-properties": [{
+			"sort": "alphabetical",
+			"static": false,
+			"type": "property",
+			"name": "/#.+/"
+		}],
+	},
+	order: [
+		'[private-properties]'
+	],
+}];
+
+const privateStaticAlphabeticalProperties = [{
+	groups: {
+		"private-static-properties": [{
+			"sort": "alphabetical",
+			"static": true,
+			"type": "property",
+			"name": "/#.+/"
+		}],
+	},
+	order: [
+		'[private-static-properties]'
+	],
+}];
+
+const privateStaticAlphabeticalMethods = [{
+	groups: {
+		"private-static-methods": [{
+			"sort": "alphabetical",
+			"static": true,
+			"type": "method",
+			"name": "/#.+/"
+		}],
+	},
+	order: [
+		'[private-static-methods]'
+	],
+}];
+
+const privateAlphabeticalMethods = [{
+	groups: {
+		"private-methods": [{
+			"sort": "alphabetical",
+			"static": false,
+			"type": "method",
+			"name": "/#.+/"
+		}],
+	},
+	order: [
+		'[private-methods]'
+	],
+}];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -739,6 +795,59 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: computedMethodKeysCustomGroupOptions,
+		},
+		// private members
+		{
+			code: 'class A { static #foo = 1; static #bar = 2; }',
+			output: 'class A { static #bar = 2; static #foo = 1;  }',
+			errors: [
+				{
+					message: 'Expected static property #bar to come before static property #foo.',
+					type: 'ClassPrivateProperty',
+				},
+			],
+			options: privateStaticAlphabeticalProperties,
+			parser: require.resolve('@babel/eslint-parser'),
+			parserOptions,
+		},
+		{
+			code: 'class A { #foo = 1; #bar = 2; }',
+			output: 'class A { #bar = 2; #foo = 1;  }',
+			errors: [
+				{
+					message: 'Expected property #bar to come before property #foo.',
+					type: 'ClassPrivateProperty',
+				},
+			],
+			options: privateAlphabeticalProperties,
+			parser: require.resolve('@babel/eslint-parser'),
+			parserOptions,
+		},
+		{
+			code: 'class A { static #foo() {} static #bar() {} }',
+			output: 'class A { static #bar() {} static #foo() {}  }',
+			errors: [
+				{
+					message: 'Expected static method #bar to come before static method #foo.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: privateStaticAlphabeticalMethods,
+			parser: require.resolve('@babel/eslint-parser'),
+			parserOptions,
+		},
+		{
+			code: 'class A { #foo() {} #bar() {} }',
+			output: 'class A { #bar() {} #foo() {}  }',
+			errors: [
+				{
+					message: 'Expected method #bar to come before method #foo.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: privateAlphabeticalMethods,
+			parser: require.resolve('@babel/eslint-parser'),
+			parserOptions,
 		},
 	],
 });
