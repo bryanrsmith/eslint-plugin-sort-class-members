@@ -174,6 +174,7 @@ function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
 }
 
 function getMemberInfo(node, sourceCode) {
+	const priv = node.key.type === 'PrivateName';
 	let name;
 	let type;
 	let propertyType;
@@ -182,11 +183,11 @@ function getMemberInfo(node, sourceCode) {
 
 	if (node.type === 'ClassProperty' || node.type === 'ClassPrivateProperty') {
 		type = 'property';
-		const [first, second] = sourceCode.getFirstTokens(node.key, 2);
 
-		if (node.key.type === 'PrivateName') {
+		if (priv) {
 			name = `#${node.key.id.name}`;
 		} else {
+			const [first, second] = sourceCode.getFirstTokens(node.key, 2);
 			name = second && second.type === 'Identifier' ? second.value : first.value;
 		}
 
@@ -203,11 +204,7 @@ function getMemberInfo(node, sourceCode) {
 			const keyAfterToken = sourceCode.getTokenAfter(node.key);
 			name = sourceCode.getText().slice(keyBeforeToken.range[0], keyAfterToken.range[1]);
 		} else {
-			if (node.key.type === 'PrivateName') {
-				name = `#${node.key.id.name}`;
-			} else {
-				name = node.key.name;
-			}
+			name = priv ? `#${node.key.id.name}` : node.key.name;
 		}
 		type = 'method';
 		async = node.value && node.value.async;
@@ -219,6 +216,7 @@ function getMemberInfo(node, sourceCode) {
 		decorators,
 		static: node.static,
 		async,
+		private: priv,
 		kind: node.kind,
 		propertyType,
 		node,
@@ -418,6 +416,7 @@ const comparers = [
 	{ property: 'type', value: 10, test: (m, s) => s.type === m.type },
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
 	{ property: 'async', value: 10, test: (m, s) => s.async === m.async },
+	{ property: 'private', value: 10, test: (m, s) => s.private === m.private },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
 	{
 		property: 'groupByDecorator',

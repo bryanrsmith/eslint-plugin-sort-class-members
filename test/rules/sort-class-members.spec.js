@@ -166,7 +166,7 @@ const privateAlphabeticalProperties = [
 					sort: 'alphabetical',
 					static: false,
 					type: 'property',
-					name: '/#.+/',
+					private: true,
 				},
 			],
 		},
@@ -182,7 +182,7 @@ const privateStaticAlphabeticalProperties = [
 					sort: 'alphabetical',
 					static: true,
 					type: 'property',
-					name: '/#.+/',
+					private: true,
 				},
 			],
 		},
@@ -198,7 +198,7 @@ const privateStaticAlphabeticalMethods = [
 					sort: 'alphabetical',
 					static: true,
 					type: 'method',
-					name: '/#.+/',
+					private: true,
 				},
 			],
 		},
@@ -214,11 +214,17 @@ const privateAlphabeticalMethods = [
 					sort: 'alphabetical',
 					static: false,
 					type: 'method',
-					name: '/#.+/',
+					private: true,
 				},
 			],
 		},
 		order: ['[private-methods]'],
+	},
+];
+
+const privateRegexpOptions = [
+	{
+		order: ['before', '/#ab.+/', 'after', '[everything-else]'],
 	},
 ];
 
@@ -854,6 +860,19 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: privateAlphabeticalMethods,
+			parser: require.resolve('@babel/eslint-parser'),
+			parserOptions,
+		},
+		{
+			code: 'class A { #abc(){} before(){} after(){} }',
+			output: 'class A { before(){} #abc(){}  after(){} }',
+			errors: [
+				{
+					message: 'Expected method before to come before method #abc.',
+					type: 'MethodDefinition',
+				},
+			],
+			options: privateRegexpOptions,
 			parser: require.resolve('@babel/eslint-parser'),
 			parserOptions,
 		},
