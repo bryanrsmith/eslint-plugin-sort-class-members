@@ -43,7 +43,6 @@
 		"@babel/plugin-proposal-decorators": "^7.15.8",
 		"@babel/preset-env": "^7.9.5",
 		"@babel/register": "^7.9.0",
-		"@bryanrsmith/eslint-config-standard": "^2.1.3",
 		"eslint": "^8.0.0",
 		"eslint-config-prettier": "^6.10.1",
 		"jest": "^27.4.3",

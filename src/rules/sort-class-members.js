@@ -335,7 +335,7 @@ function expandSlot(input, groups) {
 	}
 
 	if (slot.group) {
-		if (groups.hasOwnProperty(slot.group)) {
+		if (Object.prototype.hasOwnProperty.call(groups, slot.group)) {
 			return expandSlot(groups[slot.group], groups);
 		}
 
