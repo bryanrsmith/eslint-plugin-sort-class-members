@@ -1,5 +1,4 @@
 [![build][ci-image]][ci-url]
-[![test coverage][coveralls-image]][coveralls-url]
 [![npm][npm-image]][npm-url]
 
 # eslint-plugin-sort-class-members
@@ -144,7 +143,5 @@ Inspired by the `sort-comp` rule from [eslint-plugin-react](https://github.com/y
 
 [ci-image]: https://img.shields.io/github/workflow/status/bryanrsmith/eslint-plugin-sort-class-members/CI/main?style=flat-square
 [ci-url]: https://github.com/bryanrsmith/eslint-plugin-sort-class-members/actions
-[coveralls-image]: https://img.shields.io/coveralls/bryanrsmith/eslint-plugin-sort-class-members/main.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/github/bryanrsmith/eslint-plugin-sort-class-members?branch=main
 [npm-image]: https://img.shields.io/npm/v/eslint-plugin-sort-class-members.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/eslint-plugin-sort-class-members

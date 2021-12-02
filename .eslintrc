@@ -8,5 +8,13 @@
 	"ecmaFeatures": {
 		"modules": true,
 		"experimentalObjectRestSpread": true
-	}
+	},
+	"overrides": [
+		{
+			"files": ["test/**/*.js"],
+			"env": {
+				"jest": true
+			}
+		}
+	]
 }
