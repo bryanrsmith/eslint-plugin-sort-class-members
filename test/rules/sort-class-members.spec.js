@@ -273,16 +273,14 @@ ruleTester.run('sort-class-members', rule, {
 
 		// class properties with decorators
 		{
-			code:
-				'class A { @observable bar = 2; @observable baz = 1; foo = 3; @Inject() hoge = 4; @observable @Inject() fuga = 5; constructor(){} }',
+			code: 'class A { @observable bar = 2; @observable baz = 1; foo = 3; @Inject() hoge = 4; @observable @Inject() fuga = 5; constructor(){} }',
 			options: decoratorOptions,
 			parser: require.resolve('@babel/eslint-parser'),
 			parserOptions,
 		},
 
 		{
-			code:
-				'class A { @observable bar = 2; @observable foo = 1; @Inject() @observable fuga = 5; baz = 3; constructor(){}; @Inject() hoge = 4; }',
+			code: 'class A { @observable bar = 2; @observable foo = 1; @Inject() @observable fuga = 5; baz = 3; constructor(){}; @Inject() hoge = 4; }',
 			options: decoratorOptions,
 			parser: require.resolve('@babel/eslint-parser'),
 			parserOptions,
@@ -685,8 +683,7 @@ ruleTester.run('sort-class-members', rule, {
 			parserOptions,
 		},
 		{
-			code:
-				'module.exports = class A { constructor(){} /** move the comment */ @moveThis @andThis static beforeCtor(){} }',
+			code: 'module.exports = class A { constructor(){} /** move the comment */ @moveThis @andThis static beforeCtor(){} }',
 			output:
 				'module.exports = class A { /** move the comment */ @moveThis @andThis static beforeCtor(){} constructor(){}   }',
 			errors: [
@@ -700,8 +697,7 @@ ruleTester.run('sort-class-members', rule, {
 			parserOptions,
 		},
 		{
-			code:
-				'module.exports = class A { constructor(){} /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} }',
+			code: 'module.exports = class A { constructor(){} /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} }',
 			output:
 				'module.exports = class A { /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} constructor(){}   }',
 			errors: [
@@ -729,8 +725,7 @@ ruleTester.run('sort-class-members', rule, {
 			parserOptions,
 		},
 		{
-			code:
-				'class A {  @observable bar = 2; baz = 3; @Inject() hoge = 4; @observable foo = 1; @observable @Inject() fuga = 5; constructor(){} }',
+			code: 'class A {  @observable bar = 2; baz = 3; @Inject() hoge = 4; @observable foo = 1; @observable @Inject() fuga = 5; constructor(){} }',
 			output:
 				'class A {  @observable bar = 2; @observable foo = 1; baz = 3; @Inject() hoge = 4;  @observable @Inject() fuga = 5; constructor(){} }',
 			errors: [
@@ -776,8 +771,7 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		// computed method keys
 		{
-			code:
-				'module.exports.foo = Symbol("bar"); class A { [ module.exports.foo ]() {} constructor() {} }',
+			code: 'module.exports.foo = Symbol("bar"); class A { [ module.exports.foo ]() {} constructor() {} }',
 			output:
 				'module.exports.foo = Symbol("bar"); class A { constructor() {} [ module.exports.foo ]() {}  }',
 			errors: [

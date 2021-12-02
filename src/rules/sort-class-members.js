@@ -39,10 +39,10 @@ export const sortClassMembersRule = {
 
 				// filter out the second accessor in each pair so we only detect one problem
 				// for out-of-order	accessor pairs
-				members = members.filter(m => !(m.matchingAccessor && !m.isFirstAccessor));
+				members = members.filter((m) => !(m.matchingAccessor && !m.isFirstAccessor));
 
 				// ignore members that don't match any slots
-				members = members.filter(member => member.acceptableSlots.length);
+				members = members.filter((member) => member.acceptableSlots.length);
 
 				// check member positions against rule order
 				const problems = findProblems(members, locale);
@@ -104,14 +104,8 @@ function reportProblem({
 			const sourceCode = context.getSourceCode();
 			const sourceAfterToken = sourceCode.getTokenAfter(source.node);
 
-			const sourceJSDoc = sourceCode
-				.getCommentsBefore(source.node)
-				.slice(-1)
-				.pop();
-			const targetJSDoc = sourceCode
-				.getCommentsBefore(target.node)
-				.slice(-1)
-				.pop();
+			const sourceJSDoc = sourceCode.getCommentsBefore(source.node).slice(-1).pop();
+			const targetJSDoc = sourceCode.getCommentsBefore(target.node).slice(-1).pop();
 			const decorators = target.node.decorators || [];
 			const targetDecorator = decorators.slice(-1).pop() || {};
 			const insertTargetNode = targetJSDoc || targetDecorator.node || target.node;
@@ -199,7 +193,7 @@ function getMemberInfo(node, sourceCode) {
 		propertyType = node.value ? node.value.type : node.value;
 		decorators =
 			(!!node.decorators &&
-				node.decorators.map(n =>
+				node.decorators.map((n) =>
 					n.expression.type === 'CallExpression' ? n.expression.callee.name : n.expression.name
 				)) ||
 			[];
@@ -273,8 +267,8 @@ function forEachPair(list, callback) {
 }
 
 function areMembersInCorrectOrder(first, second, collator) {
-	return first.acceptableSlots.some(a =>
-		second.acceptableSlots.some(b =>
+	return first.acceptableSlots.some((a) =>
+		second.acceptableSlots.some((b) =>
 			a.index === b.index && areSlotsAlphabeticallySorted(a, b)
 				? collator.compare(first.name, second.name) <= 0
 				: a.index <= b.index
@@ -316,12 +310,12 @@ function scoreMember(memberInfo, slot) {
 }
 
 function getExpectedOrder(order, groups) {
-	return flatten(order.map(s => expandSlot(s, groups)));
+	return flatten(order.map((s) => expandSlot(s, groups)));
 }
 
 function expandSlot(input, groups) {
 	if (Array.isArray(input)) {
-		return input.map(x => expandSlot(x, groups));
+		return input.map((x) => expandSlot(x, groups));
 	}
 
 	let slot;
@@ -380,10 +374,10 @@ function getNameComparer(name) {
 
 		const re = new RegExp(namePattern);
 
-		return n => re.test(n);
+		return (n) => re.test(n);
 	}
 
-	return n => n === name;
+	return (n) => n === name;
 }
 
 function flatten(collection) {
