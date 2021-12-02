@@ -181,7 +181,12 @@ function getMemberInfo(node, sourceCode) {
 	let async = false;
 	let decorators = [];
 
-	if (node.type === 'ClassProperty' || node.type === 'ClassPrivateProperty') {
+	if (
+		node.type === 'ClassProperty' ||
+		node.type === 'ClassPrivateProperty' ||
+		node.type === 'PropertyDefinition' ||
+		node.type === 'PrivateIdentifier'
+	) {
 		type = 'property';
 
 		if (priv) {
