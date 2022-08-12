@@ -391,7 +391,7 @@ ruleTester.run('sort-class-members', rule, {
 			errors: [
 				{
 					message: 'Expected property bar to come before constructor.',
-					type: 'ClassProperty',
+					type: 'PropertyDefinition',
 				},
 			],
 			parser: require.resolve('@babel/eslint-parser'),
@@ -404,7 +404,7 @@ ruleTester.run('sort-class-members', rule, {
 			errors: [
 				{
 					message: 'Expected static property bar to come before constructor.',
-					type: 'ClassProperty',
+					type: 'PropertyDefinition',
 				},
 			],
 			parser: require.resolve('@babel/eslint-parser'),
@@ -417,7 +417,7 @@ ruleTester.run('sort-class-members', rule, {
 			errors: [
 				{
 					message: 'Expected property foo to come before property bar.',
-					type: 'ClassProperty',
+					type: 'PropertyDefinition',
 				},
 			],
 			parser: require.resolve('@babel/eslint-parser'),
@@ -731,11 +731,11 @@ ruleTester.run('sort-class-members', rule, {
 			errors: [
 				{
 					message: 'Expected property foo to come before property baz.',
-					type: 'ClassProperty',
+					type: 'PropertyDefinition',
 				},
 				{
 					message: 'Expected property foo to come before property hoge.',
-					type: 'ClassProperty',
+					type: 'PropertyDefinition',
 				},
 			],
 			options: decoratorOptions,
@@ -748,7 +748,7 @@ ruleTester.run('sort-class-members', rule, {
 			errors: [
 				{
 					message: 'Expected property bar to come before property foo.',
-					type: 'ClassProperty',
+					type: 'PropertyDefinition',
 				},
 			],
 			options: decoratorOptionsAlphabetical,
@@ -811,7 +811,7 @@ ruleTester.run('sort-class-members', rule, {
 			errors: [
 				{
 					message: 'Expected static property #bar to come before static property #foo.',
-					type: 'ClassPrivateProperty',
+					type: 'PropertyDefinition',
 				},
 			],
 			options: privateStaticAlphabeticalProperties,
@@ -824,7 +824,7 @@ ruleTester.run('sort-class-members', rule, {
 			errors: [
 				{
 					message: 'Expected property #bar to come before property #foo.',
-					type: 'ClassPrivateProperty',
+					type: 'PropertyDefinition',
 				},
 			],
 			options: privateAlphabeticalProperties,

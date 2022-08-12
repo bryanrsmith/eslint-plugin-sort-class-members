@@ -13,7 +13,13 @@ Install [ESLint](http://eslint.org) and `eslint-plugin-sort-class-members`:
 $ npm install eslint eslint-plugin-sort-class-members --save-dev
 ```
 
-**Note:** If you installed ESLint globally (using the `-g` flag) then you must also install `eslint-plugin-sort-class-members` globally.
+### Note
+
+- If you installed ESLint globally (using the `-g` flag) then you must also install `eslint-plugin-sort-class-members` globally.
+
+- `15.x` is only compatible with `@babel/eslint-parser@7.16.0` and above. Please install [`14.1`](https://github.com/bryanrsmith/eslint-plugin-sort-class-members/releases/tag/v1.14.1) or [`14.0`](https://github.com/bryanrsmith/eslint-plugin-sort-class-members/releases/tag/v1.14.0) if you are using `@babel/eslint-parser@7.15.8` or smaller.
+
+- This package may not work as expected with `@typescript-eslint/parser`, please file an issue if necessary.
 
 ## Usage
 
