@@ -175,6 +175,13 @@ function getMemberInfo(node, sourceCode) {
 	let async = false;
 	let decorators = [];
 
+	decorators =
+		(!!node.decorators &&
+			node.decorators.map((n) =>
+				n.expression.type === 'CallExpression' ? n.expression.callee.name : n.expression.name
+			)) ||
+		[];
+
 	if (
 		node.type === 'ClassProperty' ||
 		node.type === 'ClassPrivateProperty' ||
@@ -191,12 +198,6 @@ function getMemberInfo(node, sourceCode) {
 		}
 
 		propertyType = node.value ? node.value.type : node.value;
-		decorators =
-			(!!node.decorators &&
-				node.decorators.map((n) =>
-					n.expression.type === 'CallExpression' ? n.expression.callee.name : n.expression.name
-				)) ||
-			[];
 	} else {
 		if (node.computed) {
 			const keyBeforeToken = sourceCode.getTokenBefore(node.key);
