@@ -126,9 +126,10 @@ const propertyTypeOptions = [
 
 const decoratorOptions = [
 	{
-		order: ['[observables]', '[properties]', '[injects]'],
+		order: ['[observables]', '[properties]', '[actions]', '[injects]'],
 		groups: {
 			observables: [{ type: 'property', groupByDecorator: 'observable' }],
+			actions: [{ type: 'method', groupByDecorator: 'action' }],
 			injects: [{ type: 'property', groupByDecorator: 'Inject' }],
 		},
 	},
@@ -273,7 +274,7 @@ ruleTester.run('sort-class-members', rule, {
 
 		// class properties with decorators
 		{
-			code: 'class A { @observable bar = 2; @observable baz = 1; foo = 3; @Inject() hoge = 4; @observable @Inject() fuga = 5; constructor(){} }',
+			code: 'class A { @observable bar = 2; @observable baz = 1; foo = 3; @action lorem(){} @Inject() hoge = 4; @observable @Inject() fuga = 5; constructor(){} }',
 			options: decoratorOptions,
 			parser: require.resolve('@babel/eslint-parser'),
 			parserOptions,
@@ -725,9 +726,9 @@ ruleTester.run('sort-class-members', rule, {
 			parserOptions,
 		},
 		{
-			code: 'class A {  @observable bar = 2; baz = 3; @Inject() hoge = 4; @observable foo = 1; @observable @Inject() fuga = 5; constructor(){} }',
+			code: 'class A {  @observable bar = 2; baz = 3; @Inject() hoge = 4; @observable foo = 1; @observable @Inject() fuga = 5; @action lorem(){} constructor(){} }',
 			output:
-				'class A {  @observable bar = 2; @observable foo = 1; baz = 3; @Inject() hoge = 4;  @observable @Inject() fuga = 5; constructor(){} }',
+				'class A {  @observable bar = 2; @observable foo = 1; baz = 3; @Inject() hoge = 4;  @observable @Inject() fuga = 5; @action lorem(){} constructor(){} }',
 			errors: [
 				{
 					message: 'Expected property foo to come before property baz.',
@@ -736,6 +737,10 @@ ruleTester.run('sort-class-members', rule, {
 				{
 					message: 'Expected property foo to come before property hoge.',
 					type: 'ClassProperty',
+				},
+				{
+					message: 'Expected method lorem to come before property hoge.',
+					type: 'MethodDefinition',
 				},
 			],
 			options: decoratorOptions,
