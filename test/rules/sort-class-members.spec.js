@@ -5,6 +5,12 @@ const rule = plugin.rules['sort-class-members'];
 const defaultOptions = [
 	plugin.configs.recommended.rules['sort-class-members/sort-class-members'][1],
 ];
+
+const customParsers = [
+	require.resolve('@typescript-eslint/parser'),
+	require.resolve('@babel/eslint-parser'),
+];
+
 const parserOptions = {
 	babelOptions: {
 		plugins: [
@@ -239,53 +245,42 @@ ruleTester.run('sort-class-members', rule, {
 		},
 		{ code: 'class A { constructor(){} afterCtor(){} }', options: defaultOptions },
 		{ code: 'class A { constructor(){} afterCtor(){} other(){} }', options: defaultOptions },
-		{
-			code: 'class A { static a = 1; static b(){} c = 2; _d = 3; constructor(){} e(){} }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: defaultOptions,
-		},
 
-		// class properties should work with @babel/eslint-parser
-		{
-			code: 'class A { static bar = 1; constructor(){} }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: defaultOptions,
-		},
-		{
-			code: 'class A { bar = 1; constructor(){} }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: defaultOptions,
-		},
-		{
-			code: 'class A { foo }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: defaultOptions,
-		},
-		{
-			code: 'class A { foo = 1; bar = () => 2 }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: propertyTypeOptions,
-		},
+		...withCustomParsers([
+			{
+				code: 'class A { static a = 1; static b(){} c = 2; _d = 3; constructor(){} e(){} }',
+				options: defaultOptions,
+			},
 
-		// class properties with decorators
-		{
-			code: 'class A { @observable bar = 2; @observable baz = 1; foo = 3; @action lorem(){} @Inject() hoge = 4; @observable @Inject() fuga = 5; constructor(){} }',
-			options: decoratorOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
+			// class properties should work with @babel/eslint-parser
+			{
+				code: 'class A { static bar = 1; constructor(){} }',
+				options: defaultOptions,
+			},
+			{
+				code: 'class A { bar = 1; constructor(){} }',
+				options: defaultOptions,
+			},
+			{
+				code: 'class A { foo }',
+				options: defaultOptions,
+			},
+			{
+				code: 'class A { foo = 1; bar = () => 2 }',
+				options: propertyTypeOptions,
+			},
 
-		{
-			code: 'class A { @observable bar = 2; @observable foo = 1; @Inject() @observable fuga = 5; baz = 3; constructor(){}; @Inject() hoge = 4; }',
-			options: decoratorOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
+			// class properties with decorators
+			{
+				code: 'class A { @observable bar = 2; @observable baz = 1; foo = 3; @action lorem(){} @Inject() hoge = 4; @observable @Inject() fuga = 5; constructor(){} }',
+				options: decoratorOptions,
+			},
+
+			{
+				code: 'class A { @observable bar = 2; @observable foo = 1; @Inject() @observable fuga = 5; baz = 3; constructor(){}; @Inject() hoge = 4; }',
+				options: decoratorOptions,
+			},
+		]),
 
 		// regexp names
 		{ code: 'class A { before(){} abc(){} after(){} }', options: regexpOptions },
@@ -294,24 +289,20 @@ ruleTester.run('sort-class-members', rule, {
 		// custom groups
 		{ code: 'class A { onClick(){} constructor(){} }', options: customGroupOptions },
 		{ code: 'class A { onClick(){} abc(){} }', options: customGroupOptions },
-		{
+		...withCustomParsers({
 			code: 'class A { onClick(){} onChange(){} constructor(){} prop; }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
 			options: customGroupOptions,
-		},
+		}),
 		{
 			code: 'class A { get _a() { return 1; } m() { return 2; } _p() { return 3; } }',
 			options: accessorPairCustomGroupOptions,
 		},
 
 		// object config options
-		{
+		...withCustomParsers({
 			code: 'class A { a(){} _p = 1; static b(){} async c(){} }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
 			options: objectOrderOptions,
-		},
+		}),
 
 		// nested groups
 		{ code: 'class A { a(){} b(){} c(){} d(){} }', options: nestedGroupOptions },
@@ -386,45 +377,38 @@ ruleTester.run('sort-class-members', rule, {
 			],
 			options: defaultOptions,
 		},
-		{
-			code: 'class A { constructor(){} bar; }',
-			output: 'class A { bar; constructor(){}  }',
-			errors: [
-				{
-					message: 'Expected property bar to come before constructor.',
-					type: 'ClassProperty',
-				},
-			],
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: defaultOptions,
-		},
-		{
-			code: 'class A { constructor(){} static bar; }',
-			output: 'class A { static bar; constructor(){}  }',
-			errors: [
-				{
-					message: 'Expected static property bar to come before constructor.',
-					type: 'ClassProperty',
-				},
-			],
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: defaultOptions,
-		},
-		{
-			code: 'class A { bar = () => 2; foo = 1; baz() {} }',
-			output: 'class A { foo = 1; bar = () => 2;  baz() {} }',
-			errors: [
-				{
-					message: 'Expected property foo to come before property bar.',
-					type: 'ClassProperty',
-				},
-			],
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			options: propertyTypeOptions,
-		},
+		...withCustomParsers([
+			{
+				code: 'class A { constructor(){} bar; }',
+				output: 'class A { bar; constructor(){}  }',
+				errors: [
+					{
+						message: 'Expected property bar to come before constructor.',
+					},
+				],
+				options: defaultOptions,
+			},
+			{
+				code: 'class A { constructor(){} static bar; }',
+				output: 'class A { static bar; constructor(){}  }',
+				errors: [
+					{
+						message: 'Expected static property bar to come before constructor.',
+					},
+				],
+				options: defaultOptions,
+			},
+			{
+				code: 'class A { bar = () => 2; foo = 1; baz() {} }',
+				output: 'class A { foo = 1; bar = () => 2;  baz() {} }',
+				errors: [
+					{
+						message: 'Expected property foo to come before property bar.',
+					},
+				],
+				options: propertyTypeOptions,
+			},
+		]),
 		// regexp groups
 		{
 			code: 'class A { abc(){} before(){} after(){} }',
@@ -643,137 +627,118 @@ ruleTester.run('sort-class-members', rule, {
 			options: defaultOptions,
 		},
 		// decorators
-		{
-			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
-			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}  }',
-			errors: [
-				{
-					message: 'Expected static method beforeCtor to come before constructor.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: defaultOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
-			output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}  }',
-			errors: [
-				{
-					message: 'Expected static method beforeCtor to come before constructor.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: defaultOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'module.exports = class A { constructor(){} @moveThis @andThis static beforeCtor(){} }',
-			output:
-				'module.exports = class A { @moveThis @andThis static beforeCtor(){} constructor(){}  }',
-			errors: [
-				{
-					message: 'Expected static method beforeCtor to come before constructor.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: defaultOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'module.exports = class A { constructor(){} /** move the comment */ @moveThis @andThis static beforeCtor(){} }',
-			output:
-				'module.exports = class A { /** move the comment */ @moveThis @andThis static beforeCtor(){} constructor(){}   }',
-			errors: [
-				{
-					message: 'Expected static method beforeCtor to come before constructor.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: defaultOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'module.exports = class A { constructor(){} /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} }',
-			output:
-				'module.exports = class A { /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} constructor(){}   }',
-			errors: [
-				{
-					message: 'Expected static method beforeCtor to come before constructor.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: defaultOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		// https://github.com/bryanrsmith/eslint-plugin-sort-class-members/issues/52
-		{
-			code: `module.exports = class A { @moveThis afterCtor() {} constructor() {} }`,
-			output: `module.exports = class A { constructor() {} @moveThis afterCtor() {}  }`,
-			errors: [
-				{
-					message: 'Expected constructor to come before method afterCtor.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: defaultOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'class A {  @observable bar = 2; baz = 3; @Inject() hoge = 4; @observable foo = 1; @observable @Inject() fuga = 5; @action lorem(){} constructor(){} }',
-			output:
-				'class A {  @observable bar = 2; @observable foo = 1; baz = 3; @Inject() hoge = 4;  @observable @Inject() fuga = 5; @action lorem(){} constructor(){} }',
-			errors: [
-				{
-					message: 'Expected property foo to come before property baz.',
-					type: 'ClassProperty',
-				},
-				{
-					message: 'Expected property foo to come before property hoge.',
-					type: 'ClassProperty',
-				},
-				{
-					message: 'Expected method lorem to come before property hoge.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: decoratorOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'class A { @observable foo = 1; @observable bar = 2; constructor(){} }',
-			output: 'class A { @observable bar = 2; @observable foo = 1;  constructor(){} }',
-			errors: [
-				{
-					message: 'Expected property bar to come before property foo.',
-					type: 'ClassProperty',
-				},
-			],
-			options: decoratorOptionsAlphabetical,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		// object config options
-		{
-			code: 'class A { a(){} _p = 1; async b(){} static c(){} }',
-			output: 'class A { a(){} _p = 1; static c(){} async b(){}  }',
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-			errors: [
-				{
-					message: 'Expected static method c to come before method b.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: objectOrderOptions,
-		},
+		...withCustomParsers([
+			{
+				code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
+				output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}  }',
+				errors: [
+					{
+						message: 'Expected static method beforeCtor to come before constructor.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: defaultOptions,
+			},
+			{
+				code: 'module.exports = class A { constructor(){} @moveThis static beforeCtor(){} }',
+				output: 'module.exports = class A { @moveThis static beforeCtor(){} constructor(){}  }',
+				errors: [
+					{
+						message: 'Expected static method beforeCtor to come before constructor.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: defaultOptions,
+			},
+			{
+				code: 'module.exports = class A { constructor(){} @moveThis @andThis static beforeCtor(){} }',
+				output:
+					'module.exports = class A { @moveThis @andThis static beforeCtor(){} constructor(){}  }',
+				errors: [
+					{
+						message: 'Expected static method beforeCtor to come before constructor.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: defaultOptions,
+			},
+			{
+				code: 'module.exports = class A { constructor(){} /** move the comment */ @moveThis @andThis static beforeCtor(){} }',
+				output:
+					'module.exports = class A { /** move the comment */ @moveThis @andThis static beforeCtor(){} constructor(){}   }',
+				errors: [
+					{
+						message: 'Expected static method beforeCtor to come before constructor.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: defaultOptions,
+			},
+			{
+				code: 'module.exports = class A { constructor(){} /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} }',
+				output:
+					'module.exports = class A { /** move the comment */ @moveThis /** this thing needs to go too */ @andThis /** yet another comment */ static beforeCtor(){} constructor(){}   }',
+				errors: [
+					{
+						message: 'Expected static method beforeCtor to come before constructor.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: defaultOptions,
+			},
+			// https://github.com/bryanrsmith/eslint-plugin-sort-class-members/issues/52
+			{
+				code: `module.exports = class A { @moveThis afterCtor() {} constructor() {} }`,
+				output: `module.exports = class A { constructor() {} @moveThis afterCtor() {}  }`,
+				errors: [
+					{
+						message: 'Expected constructor to come before method afterCtor.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: defaultOptions,
+			},
+			{
+				code: 'class A {  @observable bar = 2; baz = 3; @Inject() hoge = 4; @observable foo = 1; @observable @Inject() fuga = 5; @action lorem(){} constructor(){} }',
+				output:
+					'class A {  @observable bar = 2; @observable foo = 1; baz = 3; @Inject() hoge = 4;  @observable @Inject() fuga = 5; @action lorem(){} constructor(){} }',
+				errors: [
+					{
+						message: 'Expected property foo to come before property baz.',
+					},
+					{
+						message: 'Expected property foo to come before property hoge.',
+					},
+					{
+						message: 'Expected method lorem to come before property hoge.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: decoratorOptions,
+			},
+			{
+				code: 'class A { @observable foo = 1; @observable bar = 2; constructor(){} }',
+				output: 'class A { @observable bar = 2; @observable foo = 1;  constructor(){} }',
+				errors: [
+					{
+						message: 'Expected property bar to come before property foo.',
+					},
+				],
+				options: decoratorOptionsAlphabetical,
+			},
+			// object config options
+			{
+				code: 'class A { a(){} _p = 1; async b(){} static c(){} }',
+				output: 'class A { a(){} _p = 1; static c(){} async b(){}  }',
+				errors: [
+					{
+						message: 'Expected static method c to come before method b.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: objectOrderOptions,
+			},
+		]),
 		// computed method keys
 		{
 			code: 'module.exports.foo = Symbol("bar"); class A { [ module.exports.foo ]() {} constructor() {} }',
@@ -810,70 +775,66 @@ ruleTester.run('sort-class-members', rule, {
 			options: computedMethodKeysCustomGroupOptions,
 		},
 		// private members
-		{
-			code: 'class A { static #foo = 1; static #bar = 2; }',
-			output: 'class A { static #bar = 2; static #foo = 1;  }',
-			errors: [
-				{
-					message: 'Expected static property #bar to come before static property #foo.',
-					type: 'ClassPrivateProperty',
-				},
-			],
-			options: privateStaticAlphabeticalProperties,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'class A { #foo = 1; #bar = 2; }',
-			output: 'class A { #bar = 2; #foo = 1;  }',
-			errors: [
-				{
-					message: 'Expected property #bar to come before property #foo.',
-					type: 'ClassPrivateProperty',
-				},
-			],
-			options: privateAlphabeticalProperties,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'class A { static #foo() {} static #bar() {} }',
-			output: 'class A { static #bar() {} static #foo() {}  }',
-			errors: [
-				{
-					message: 'Expected static method #bar to come before static method #foo.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: privateStaticAlphabeticalMethods,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'class A { #foo() {} #bar() {} }',
-			output: 'class A { #bar() {} #foo() {}  }',
-			errors: [
-				{
-					message: 'Expected method #bar to come before method #foo.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: privateAlphabeticalMethods,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
-		{
-			code: 'class A { #abc(){} before(){} after(){} }',
-			output: 'class A { before(){} #abc(){}  after(){} }',
-			errors: [
-				{
-					message: 'Expected method before to come before method #abc.',
-					type: 'MethodDefinition',
-				},
-			],
-			options: privateRegexpOptions,
-			parser: require.resolve('@babel/eslint-parser'),
-			parserOptions,
-		},
+		...withCustomParsers([
+			{
+				code: 'class A { static #foo = 1; static #bar = 2; }',
+				output: 'class A { static #bar = 2; static #foo = 1;  }',
+				errors: [
+					{
+						message: 'Expected static property #bar to come before static property #foo.',
+					},
+				],
+				options: privateStaticAlphabeticalProperties,
+			},
+			{
+				code: 'class A { #foo = 1; #bar = 2; }',
+				output: 'class A { #bar = 2; #foo = 1;  }',
+				errors: [
+					{
+						message: 'Expected property #bar to come before property #foo.',
+					},
+				],
+				options: privateAlphabeticalProperties,
+			},
+			{
+				code: 'class A { static #foo() {} static #bar() {} }',
+				output: 'class A { static #bar() {} static #foo() {}  }',
+				errors: [
+					{
+						message: 'Expected static method #bar to come before static method #foo.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: privateStaticAlphabeticalMethods,
+			},
+			{
+				code: 'class A { #foo() {} #bar() {} }',
+				output: 'class A { #bar() {} #foo() {}  }',
+				errors: [
+					{
+						message: 'Expected method #bar to come before method #foo.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: privateAlphabeticalMethods,
+			},
+			{
+				code: 'class A { #abc(){} before(){} after(){} }',
+				output: 'class A { before(){} #abc(){}  after(){} }',
+				errors: [
+					{
+						message: 'Expected method before to come before method #abc.',
+						type: 'MethodDefinition',
+					},
+				],
+				options: privateRegexpOptions,
+			},
+		]),
 	],
 });
+
+function withCustomParsers(ruleOrRules) {
+	return [ruleOrRules]
+		.flat()
+		.flatMap((rule) => customParsers.map((parser) => ({ ...rule, parser, parserOptions })));
+}

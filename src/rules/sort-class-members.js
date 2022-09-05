@@ -168,7 +168,7 @@ function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
 }
 
 function getMemberInfo(node, sourceCode) {
-	const priv = node.key.type === 'PrivateName';
+	const priv = node.key.type === 'PrivateName' || node.key.type === 'PrivateIdentifier';
 	let name;
 	let type;
 	let propertyType;
@@ -191,7 +191,7 @@ function getMemberInfo(node, sourceCode) {
 		type = 'property';
 
 		if (priv) {
-			name = `#${node.key.id.name}`;
+			name = `#${node.key.id ? node.key.id.name : node.key.name}`;
 		} else {
 			const [first, second] = sourceCode.getFirstTokens(node.key, 2);
 			name = second && second.type === 'Identifier' ? second.value : first.value;
@@ -204,7 +204,7 @@ function getMemberInfo(node, sourceCode) {
 			const keyAfterToken = sourceCode.getTokenAfter(node.key);
 			name = sourceCode.getText().slice(keyBeforeToken.range[0], keyAfterToken.range[1]);
 		} else {
-			name = priv ? `#${node.key.id.name}` : node.key.name;
+			name = priv ? `#${node.key.id ? node.key.id.name : node.key.name}` : node.key.name;
 		}
 		type = 'method';
 		async = node.value && node.value.async;

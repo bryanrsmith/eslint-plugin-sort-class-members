@@ -32,7 +32,6 @@
     "minor": "release minor",
     "major": "release major"
   },
-  "dependencies": {},
   "peerDependencies": {
     "eslint": ">=0.8.0"
   },
@@ -43,6 +42,7 @@
     "@babel/plugin-proposal-decorators": "^7.15.8",
     "@babel/preset-env": "^7.9.5",
     "@babel/register": "^7.9.0",
+    "@typescript-eslint/parser": "^5.36.2",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.4.3",
