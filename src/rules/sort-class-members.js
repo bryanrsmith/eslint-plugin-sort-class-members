@@ -173,7 +173,12 @@ function getMemberInfo(node, sourceCode) {
 	let type;
 	let propertyType;
 	let async = false;
-	let decorators = [];
+	let decorators =
+		(!!node.decorators &&
+			node.decorators.map((n) =>
+				n.expression.type === 'CallExpression' ? n.expression.callee.name : n.expression.name
+			)) ||
+		[];
 
 	if (node.type === 'PropertyDefinition') {
 		type = 'property';
@@ -186,12 +191,6 @@ function getMemberInfo(node, sourceCode) {
 		}
 
 		propertyType = node.value ? node.value.type : node.value;
-		decorators =
-			(!!node.decorators &&
-				node.decorators.map((n) =>
-					n.expression.type === 'CallExpression' ? n.expression.callee.name : n.expression.name
-				)) ||
-			[];
 	} else {
 		if (node.computed) {
 			const keyBeforeToken = sourceCode.getTokenBefore(node.key);
