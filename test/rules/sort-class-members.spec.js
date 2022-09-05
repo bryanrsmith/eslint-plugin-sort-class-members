@@ -9,6 +9,7 @@ const defaultOptions = [
 const customParsers = [
 	require.resolve('@typescript-eslint/parser'),
 	require.resolve('@babel/eslint-parser'),
+	require.resolve('babel-eslint-parser-legacy'),
 ];
 
 const parserOptions = {
