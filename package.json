@@ -1,61 +1,61 @@
 {
-	"name": "eslint-plugin-sort-class-members",
-	"version": "1.14.1",
-	"description": "ESLint rule for enforcing consistent ES6 class member order.",
-	"keywords": [
-		"eslint",
-		"eslintplugin",
-		"eslint-plugin"
-	],
-	"author": "Bryan R Smith <BryanRSmith@gmail.com>",
-	"homepage": "https://github.com/bryanrsmith/eslint-plugin-sort-class-members",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/bryanrsmith/eslint-plugin-sort-class-members.git"
-	},
-	"main": "dist/index.js",
-	"directories": {
-		"lib": "dist/"
-	},
-	"files": [
-		"README.md",
-		"dist"
-	],
-	"scripts": {
-		"prebuild": "npm run lint && npm run prettier-check && npm run test",
-		"build": "rm -rf dist && babel src --out-dir dist",
-		"test": "jest --coverage test/**/*.js",
-		"lint": "eslint src/ test/",
-		"prettier": "prettier --write './{src,test}/**/*.js'",
-		"prettier-check": "prettier --list-different './{src,test}/**/*.js'",
-		"patch": "release patch",
-		"minor": "release minor",
-		"major": "release major"
-	},
-	"dependencies": {},
-	"peerDependencies": {
-		"eslint": ">=0.8.0"
-	},
-	"devDependencies": {
-		"@babel/cli": "^7.8.4",
-		"@babel/eslint-parser": "^7.15.8",
-		"@babel/plugin-proposal-class-properties": "^7.14.5",
-		"@babel/plugin-proposal-decorators": "^7.15.8",
-		"@babel/preset-env": "^7.9.5",
-		"@babel/register": "^7.9.0",
-		"eslint": "^8.0.0",
-		"eslint-config-prettier": "^8.3.0",
-		"jest": "^27.4.3",
-		"prettier": "^2.5.0",
-		"release-script": "^1.0.2"
-	},
-	"engines": {
-		"node": ">=4.0.0"
-	},
-	"license": "MIT",
-	"babel": {
-		"presets": [
-			"@babel/preset-env"
-		]
-	}
+  "name": "eslint-plugin-sort-class-members",
+  "version": "1.15.0",
+  "description": "ESLint rule for enforcing consistent ES6 class member order.",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin"
+  ],
+  "author": "Bryan R Smith <BryanRSmith@gmail.com>",
+  "homepage": "https://github.com/bryanrsmith/eslint-plugin-sort-class-members",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bryanrsmith/eslint-plugin-sort-class-members.git"
+  },
+  "main": "dist/index.js",
+  "directories": {
+    "lib": "dist/"
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "npm run lint && npm run prettier-check && npm run test",
+    "build": "rm -rf dist && babel src --out-dir dist",
+    "test": "jest --coverage test/**/*.js",
+    "lint": "eslint src/ test/",
+    "prettier": "prettier --write './{src,test}/**/*.js'",
+    "prettier-check": "prettier --list-different './{src,test}/**/*.js'",
+    "patch": "release patch",
+    "minor": "release minor",
+    "major": "release major"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "eslint": ">=0.8.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/eslint-parser": "^7.15.8",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-proposal-decorators": "^7.15.8",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/register": "^7.9.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "jest": "^27.4.3",
+    "prettier": "^2.5.0",
+    "release-script": "^1.0.2"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  }
 }
