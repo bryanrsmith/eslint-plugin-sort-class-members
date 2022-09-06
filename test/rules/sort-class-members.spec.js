@@ -343,6 +343,7 @@ ruleTester.run('sort-class-members', rule, {
 
 		// Class expressions
 		{ code: 'module.exports = class A {}', options: defaultOptions },
+		{ code: 'class { [k: string]: any; }', parser: require.resolve('@typescript-eslint/parser') },
 	],
 	invalid: [
 		{

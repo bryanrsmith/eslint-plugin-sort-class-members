@@ -157,6 +157,7 @@ function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
 	const classMemberNodes = classDeclaration.body.body;
 
 	const members = classMemberNodes
+		.filter((x) => x.key)
 		.map((member, i) => ({ ...getMemberInfo(member, sourceCode), id: String(i) }))
 		.map((memberInfo, i, memberInfos) => {
 			matchAccessorPairs(memberInfos);
