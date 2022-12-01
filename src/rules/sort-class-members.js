@@ -170,7 +170,10 @@ function getClassMemberInfos(classDeclaration, sourceCode, orderedSlots) {
 
 function getMemberInfo(node, sourceCode) {
 	node.accessibility = node.accessibility || 'public';
-	const isPrivate = node.accessibility ? node.accessibility === 'private': false;
+	const isPrivate =
+		node.key.type === 'PrivateName' ||
+		node.key.type === 'PrivateIdentifier' ||
+		node.accessibility === 'private';
 	let name;
 	let type;
 	let propertyType;
