@@ -27,10 +27,7 @@
     "test": "jest --coverage test/**/*.js",
     "lint": "eslint src/ test/",
     "prettier": "prettier --write './{src,test}/**/*.js'",
-    "prettier-check": "prettier --list-different './{src,test}/**/*.js'",
-    "patch": "release patch",
-    "minor": "release minor",
-    "major": "release major"
+    "prettier-check": "prettier --list-different './{src,test}/**/*.js'"
   },
   "peerDependencies": {
     "eslint": ">=0.8.0"
@@ -48,7 +45,6 @@
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.4.3",
     "prettier": "^2.5.0",
-    "release-script": "^1.0.2",
     "typescript": "^4.8.2"
   },
   "engines": {
