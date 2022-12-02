@@ -39,6 +39,7 @@ export const sortClassMembersSchema = [
 								static: { type: 'boolean' },
 								private: { type: 'boolean' },
 								async: { type: 'boolean' },
+								accessibility: { enum: ['public', 'private', 'protected'] },
 							},
 							additionalProperties: false,
 						},

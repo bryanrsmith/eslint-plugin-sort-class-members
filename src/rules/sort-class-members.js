@@ -175,6 +175,7 @@ function getMemberInfo(node, sourceCode) {
 	let propertyType;
 	let async = false;
 	let decorators = [];
+	const accessibility = node.accessibility ?? 'public';
 
 	decorators =
 		(!!node.decorators &&
@@ -218,6 +219,7 @@ function getMemberInfo(node, sourceCode) {
 		static: node.static,
 		async,
 		private: isPrivate,
+		accessibility,
 		kind: node.kind,
 		propertyType,
 		node,
@@ -418,6 +420,7 @@ const comparers = [
 	{ property: 'static', value: 10, test: (m, s) => s.static === m.static },
 	{ property: 'async', value: 10, test: (m, s) => s.async === m.async },
 	{ property: 'private', value: 10, test: (m, s) => s.private === m.private },
+	{ property: 'accessibility', value: 10, test: (m, s) => s.accessibility == m.accessibility },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
 	{
 		property: 'groupByDecorator',

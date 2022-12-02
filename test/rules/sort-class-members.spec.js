@@ -236,6 +236,24 @@ const privateRegexpOptions = [
 	},
 ];
 
+const typescriptAccessibilityOptions = [
+	{
+		groups: {
+			private: [
+				{
+					accessibility: 'private',
+				},
+			],
+			public: [
+				{
+					accessibility: 'public',
+				},
+			],
+		},
+		order: ['[private]', 'constructor', '[public]'],
+	},
+];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -344,6 +362,18 @@ ruleTester.run('sort-class-members', rule, {
 		// Class expressions
 		{ code: 'module.exports = class A {}', options: defaultOptions },
 		{ code: 'class { [k: string]: any; }', parser: require.resolve('@typescript-eslint/parser') },
+
+		// TS accessibility
+		{
+			code: 'class { private a: any; constructor(){} b(){} }',
+			options: typescriptAccessibilityOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'class { private a: any; constructor(){} public b(){} c(){} }',
+			options: typescriptAccessibilityOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
 	],
 	invalid: [
 		{
@@ -832,6 +862,30 @@ ruleTester.run('sort-class-members', rule, {
 				options: privateRegexpOptions,
 			},
 		]),
+		{
+			code: 'class { constructor(){} private b: any; }',
+			output: 'class { private b: any; constructor(){}  }',
+			errors: [
+				{
+					message: 'Expected property b to come before constructor.',
+					type: 'PropertyDefinition',
+				},
+			],
+			options: typescriptAccessibilityOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'class { a(){} private b: any; }',
+			output: 'class { private b: any; a(){}  }',
+			errors: [
+				{
+					message: 'Expected property b to come before method a.',
+					type: 'PropertyDefinition',
+				},
+			],
+			options: typescriptAccessibilityOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
 	],
 });
 

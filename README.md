@@ -104,6 +104,7 @@ Members can be matched to positional slots using several criteria, including nam
 - `accessorPair`: `true|false`. True to match only getters and setters that are part of a pair. i.e., only those that have both `get` and `set` methods defined.
 - `static`: `true|false` to restrict the match to static or instance members.
 - `private`: `true|false` to restrict the match to [private members](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields). **Note**: Private members currently require a custom parser like [babel-eslint](https://github.com/babel/babel-eslint).
+- `accessibility`: `"public"|"private"|"protected"` to restrict the match to members with the specified typescript accessibility modifier. **Note**: Requires `@typescript-eslint/parser`.
 - `async`: `true|false` to restrict the match to async members.
 - `sort`: `"alphabetical"|"none"`. Used to require a specific sorting within the slot for matched members. Defaults to `"none"`.
 - `groupByDecorator`: a string used to group properties with the same decorator name (e.g. `observable` for `@observable`). Can be used together with `sort`. **Note**: Decorators are a Stage 2 proposal and require a custom parser like [babel-eslint](https://github.com/babel/babel-eslint).
