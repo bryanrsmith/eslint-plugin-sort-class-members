@@ -176,7 +176,10 @@ function getMemberInfo(node, sourceCode) {
 	let async = false;
 	let decorators = [];
 	const accessibility = node.accessibility ?? 'public';
-	const abstract = node.type === 'TSAbstractAccessorProperty' || node.type === 'TSAbstractPropertyDefinition' || node.type === 'TSAbstractMethodDefinition';
+	const abstract =
+		node.type === 'TSAbstractAccessorProperty' ||
+		node.type === 'TSAbstractPropertyDefinition' ||
+		node.type === 'TSAbstractMethodDefinition';
 
 	decorators =
 		(!!node.decorators &&
