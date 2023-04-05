@@ -254,6 +254,29 @@ const typescriptAccessibilityOptions = [
 	},
 ];
 
+const typescriptKeywordsOptions = [
+	{
+		groups: {
+			abstract: [
+				{
+					abstract: true,
+				},
+			],
+			override: [
+				{
+					override: true,
+				},
+			],
+			readonly: [
+				{
+					readonly: true,
+				},
+			],
+		},
+		order: ['[override]', '[readonly]', '[abstract]'],
+	},
+];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -372,6 +395,11 @@ ruleTester.run('sort-class-members', rule, {
 		{
 			code: 'class { private a: any; constructor(){} public b(){} c(){} }',
 			options: typescriptAccessibilityOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'class { override a: any; readonly b = true; abstract c: () => {} }',
+			options: typescriptKeywordsOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
 	],
@@ -884,6 +912,42 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: typescriptAccessibilityOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'class { abstract a; override b; }',
+			output: 'class { override b; abstract a;  }',
+			errors: [
+				{
+					message: 'Expected property b to come before method a.',
+					type: 'PropertyDefinition',
+				},
+			],
+			options: typescriptKeywordsOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'class { readonly a; override b; }',
+			output: 'class { override b; readonly a;  }',
+			errors: [
+				{
+					message: 'Expected property b to come before property a.',
+					type: 'PropertyDefinition',
+				},
+			],
+			options: typescriptKeywordsOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'class { abstract a(); readonly b; }',
+			output: 'class { readonly b; abstract a();  }',
+			errors: [
+				{
+					message: 'Expected property b to come before method a.',
+					type: 'PropertyDefinition',
+				},
+			],
+			options: typescriptKeywordsOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
 	],

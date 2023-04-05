@@ -176,6 +176,10 @@ function getMemberInfo(node, sourceCode) {
 	let async = false;
 	let decorators = [];
 	const accessibility = node.accessibility ?? 'public';
+	const abstract =
+		node.type === 'TSAbstractAccessorProperty' ||
+		node.type === 'TSAbstractPropertyDefinition' ||
+		node.type === 'TSAbstractMethodDefinition';
 
 	decorators =
 		(!!node.decorators &&
@@ -217,6 +221,9 @@ function getMemberInfo(node, sourceCode) {
 		type,
 		decorators,
 		static: node.static,
+		abstract,
+		override: node.override,
+		readonly: !!node.readonly,
 		async,
 		private: isPrivate,
 		accessibility,
@@ -421,6 +428,9 @@ const comparers = [
 	{ property: 'async', value: 10, test: (m, s) => s.async === m.async },
 	{ property: 'private', value: 10, test: (m, s) => s.private === m.private },
 	{ property: 'accessibility', value: 10, test: (m, s) => s.accessibility == m.accessibility },
+	{ property: 'abstract', value: 10, test: (m, s) => s.abstract == m.abstract },
+	{ property: 'override', value: 10, test: (m, s) => s.override == m.override },
+	{ property: 'readonly', value: 10, test: (m, s) => s.readonly == m.readonly },
 	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
 	{
 		property: 'groupByDecorator',
