@@ -192,7 +192,8 @@ function getMemberInfo(node, sourceCode) {
 		node.type === 'ClassProperty' ||
 		node.type === 'ClassPrivateProperty' ||
 		node.type === 'PropertyDefinition' ||
-		node.type === 'PrivateIdentifier'
+		node.type === 'PrivateIdentifier' ||
+		node.type === 'TSAbstractPropertyDefinition'
 	) {
 		type = 'property';
 

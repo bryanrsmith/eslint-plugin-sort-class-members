@@ -402,6 +402,11 @@ ruleTester.run('sort-class-members', rule, {
 			options: typescriptKeywordsOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
+		{
+			code: 'abstract class Foo<T> { protected abstract readonly _foo: T; public readonly bar: string; protected constructor(bar: string) {}}',
+			options: [{ order: ['[properties]', 'constructor', '[methods]'] }],
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
 	],
 	invalid: [
 		{
@@ -919,7 +924,7 @@ ruleTester.run('sort-class-members', rule, {
 			output: 'class { override b; abstract a;  }',
 			errors: [
 				{
-					message: 'Expected property b to come before method a.',
+					message: 'Expected property b to come before property a.',
 					type: 'PropertyDefinition',
 				},
 			],
