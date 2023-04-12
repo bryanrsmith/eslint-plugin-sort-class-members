@@ -403,7 +403,7 @@ ruleTester.run('sort-class-members', rule, {
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
 		{
-			code: 'abstract class Foo<T> { protected abstract readonly _foo: T; public readonly bar: string; protected constructor(bar: string) {}}',
+			code: 'abstract class Foo<T> { protected abstract readonly _foo: T; public readonly bar: string; protected constructor(bar: string) {} }',
 			options: [{ order: ['[properties]', 'constructor', '[methods]'] }],
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
@@ -953,6 +953,18 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: typescriptKeywordsOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'abstract class Foo<T> { public readonly bar: string; protected constructor(bar: string) {} protected abstract readonly _foo: T; public abstract get data(): Foo<T>[\'_foo\']; protected abstract parse(baz?: string): T; protected abstract stringify(): string; }',
+			output: 'abstract class Foo<T> { public readonly bar: string; protected abstract readonly _foo: T; protected constructor(bar: string) {}  public abstract get data(): Foo<T>[\'_foo\']; protected abstract parse(baz?: string): T; protected abstract stringify(): string; }',
+			errors: [
+				{
+					message: 'Expected property _foo to come before constructor.',
+					type: 'TSAbstractPropertyDefinition',
+				},
+			],
+			options: [{ order: ['[properties]', 'constructor', '[methods]'] }],
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
 	],
