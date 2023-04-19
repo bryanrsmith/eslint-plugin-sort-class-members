@@ -441,7 +441,7 @@ const comparers = [
 	{
 		property: 'noDecorator',
 		value: 11,
-		test: (m, s) => m.decorators.length === 0,
+		test: (m, s) => (m.decorators.length === 0) === s.noDecorator,
 	},
 	{
 		property: 'accessorPair',
