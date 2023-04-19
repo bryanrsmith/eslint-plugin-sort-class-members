@@ -121,6 +121,12 @@ const accessorOptions = [
 	},
 ];
 
+const accessorEitherOptions = [
+	{
+		order: [{kind: 'get|set'}, '[everything-else]']
+	}
+]
+
 const propertyTypeOptions = [
 	{
 		order: [
@@ -357,6 +363,12 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { get a(){} set a(v){} }', options: accessorOptions },
 		{ code: 'class A { set a(v){} }', options: accessorOptions },
 		{ code: 'class A { get a(){} b(){} }', options: accessorOptions },
+
+		{ code: 'class A { get a(){} }', options: accessorEitherOptions },
+		{ code: 'class A { get a(){} set a(v){} }', options: accessorEitherOptions },
+		{ code: 'class A { set a(v){} }', options: accessorEitherOptions },
+		{ code: 'class A { get a(){} b(){} }', options: accessorEitherOptions },
+		
 		{
 			code: 'class A { get a(){} set a(v){} }',
 			options: [{ order: ['everything-else'], accessorPairPositioning: 'getThenSet' }],
