@@ -439,6 +439,11 @@ const comparers = [
 		test: (m, s) => m.decorators.includes(s.groupByDecorator),
 	},
 	{
+		property: 'noDecorator',
+		value: 11,
+		test: (m, s) => m.decorators.length === 0,
+	},
+	{
 		property: 'accessorPair',
 		value: 20,
 		test: (m, s) =>
@@ -446,7 +451,7 @@ const comparers = [
 	},
 	{
 		property: 'propertyType',
-		value: 11,
+		value: 12,
 		test: (m, s) => m.type === 'property' && s.propertyType === m.propertyType,
 	},
 ];
