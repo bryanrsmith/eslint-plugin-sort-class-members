@@ -142,6 +142,15 @@ const decoratorOptions = [
 	},
 ];
 
+const noDecoratorOptions = [
+	{
+		order: ['[no-decorators]', 'constructor'],
+		groups: {
+			'no-decorators': [{ noDecorator: true }],
+		},
+	}
+]
+
 const decoratorOptionsAlphabetical = [
 	{
 		order: ['[observables]', '[properties]'],
@@ -321,6 +330,12 @@ ruleTester.run('sort-class-members', rule, {
 			{
 				code: 'class A { @observable bar = 2; @observable foo = 1; @Inject() @observable fuga = 5; baz = 3; constructor(){}; @Inject() hoge = 4; }',
 				options: decoratorOptions,
+			},
+			
+			// class properties without decorators
+			{
+				code: 'class A { private bar = 2; public foo = 3; static x = 55; constructor(){}; }',
+				options: noDecoratorOptions,
 			},
 		]),
 
