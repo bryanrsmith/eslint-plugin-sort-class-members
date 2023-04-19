@@ -349,7 +349,7 @@ function expandSlot(input, groups) {
 		return [];
 	}
 
-	const testName = slot.name && getNameComparer(slot.name);
+	const testName = slot.name && getStringComparer(slot.name);
 	if (testName) {
 		slot.testName = testName;
 	}
@@ -372,24 +372,24 @@ function matchAccessorPairs(members) {
 	});
 }
 
-function getNameComparer(name) {
-	if (name[0] === '/') {
-		let namePattern = name.substr(1, name.length - 2);
+function getStringComparer(str) {
+	if (str[0] === '/') {
+		let strPattern = str.substr(1, str.length - 2);
 
-		if (namePattern[0] !== '^') {
-			namePattern = `^${namePattern}`;
+		if (strPattern[0] !== '^') {
+			strPattern = `^${strPattern}`;
 		}
 
-		if (namePattern[namePattern.length - 1] !== '$') {
-			namePattern += '$';
+		if (strPattern[strPattern.length - 1] !== '$') {
+			strPattern += '$';
 		}
 
-		const re = new RegExp(namePattern);
+		const re = new RegExp(strPattern);
 
-		return (n) => re.test(n);
+		return (s) => re.test(s);
 	}
 
-	return (n) => n === name;
+	return (s) => s === str;
 }
 
 function flatten(collection) {
@@ -436,7 +436,10 @@ const comparers = [
 	{
 		property: 'groupByDecorator',
 		value: 10,
-		test: (m, s) => m.decorators.includes(s.groupByDecorator),
+		test: (m, s) => {
+			const comparer = getStringComparer(s.groupByDecorator)
+			return m.decorators.some((decorator) => comparer(decorator))
+		},
 	},
 	{
 		property: 'accessorPair',
