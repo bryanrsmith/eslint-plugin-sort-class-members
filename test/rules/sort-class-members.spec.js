@@ -123,7 +123,13 @@ const accessorOptions = [
 
 const accessorEitherOptions = [
 	{
-		order: [{kind: 'get|set'}, '[everything-else]']
+		order: [{type: 'method', kind: 'accessor'}, '[everything-else]']
+	}
+]
+
+const accessorNeitherOptions = [
+	{
+		order: [{type: 'method', kind: 'nonAccessor'}, '[everything-else]']
 	}
 ]
 
@@ -368,6 +374,11 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { get a(){} set a(v){} }', options: accessorEitherOptions },
 		{ code: 'class A { set a(v){} }', options: accessorEitherOptions },
 		{ code: 'class A { get a(){} b(){} }', options: accessorEitherOptions },
+
+		{ code: 'class A { get a(){} }', options: accessorNeitherOptions },
+		{ code: 'class A { get a(){} set a(v){} }', options: accessorNeitherOptions },
+		{ code: 'class A { set a(v){} }', options: accessorNeitherOptions },
+		{ code: 'class A { b(){} get a(){} }', options: accessorNeitherOptions },
 		
 		{
 			code: 'class A { get a(){} set a(v){} }',
