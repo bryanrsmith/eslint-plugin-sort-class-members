@@ -146,8 +146,8 @@ const decoratorRegexpOptions = [
 	{
 		order: ['before', '[decorator-starts-with-ab]', 'after', '[everything-else]'],
 		groups: {
-			'decorator-starts-with-ab': [{ groupByDecorator: '/ab.+/' }]
-		}
+			'decorator-starts-with-ab': [{ groupByDecorator: '/ab.+/' }],
+		},
 	},
 ];
 
@@ -334,7 +334,10 @@ ruleTester.run('sort-class-members', rule, {
 
 			// regexp decorators
 			{ code: 'class A { before(){} @abc() x = 4; after(){} }', options: decoratorRegexpOptions },
-			{ code: 'class A { before(){} @something @abc() x = 4; after(){} xyz(){} }', options: decoratorRegexpOptions },
+			{
+				code: 'class A { before(){} @something @abc() x = 4; after(){} xyz(){} }',
+				options: decoratorRegexpOptions,
+			},
 		]),
 
 		// regexp names

@@ -437,8 +437,8 @@ const comparers = [
 		property: 'groupByDecorator',
 		value: 10,
 		test: (m, s) => {
-			const comparer = getStringComparer(s.groupByDecorator)
-			return m.decorators.some((decorator) => comparer(decorator))
+			const comparer = getStringComparer(s.groupByDecorator);
+			return m.decorators.some((decorator) => comparer(decorator));
 		},
 	},
 	{
