@@ -432,7 +432,19 @@ const comparers = [
 	{ property: 'abstract', value: 10, test: (m, s) => s.abstract == m.abstract },
 	{ property: 'override', value: 10, test: (m, s) => s.override == m.override },
 	{ property: 'readonly', value: 10, test: (m, s) => s.readonly == m.readonly },
-	{ property: 'kind', value: 10, test: (m, s) => s.kind === m.kind },
+	{
+		property: 'kind',
+		value: 10,
+		test: (m, s) => {
+			if (s.kind === 'accessor') {
+				return isAccessor(m);
+			} else if (s.kind === 'nonAccessor') {
+				return !isAccessor(m);
+			} else {
+				return s.kind === m.kind;
+			}
+		},
+	},
 	{
 		property: 'groupByDecorator',
 		value: 10,

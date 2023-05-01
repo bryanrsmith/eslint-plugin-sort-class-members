@@ -121,6 +121,18 @@ const accessorOptions = [
 	},
 ];
 
+const accessorEitherOptions = [
+	{
+		order: [{ type: 'method', kind: 'accessor' }, '[everything-else]'],
+	},
+];
+
+const accessorNeitherOptions = [
+	{
+		order: [{ type: 'method', kind: 'nonAccessor' }, '[everything-else]'],
+	},
+];
+
 const propertyTypeOptions = [
 	{
 		order: [
@@ -373,6 +385,16 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class A { get a(){} set a(v){} }', options: accessorOptions },
 		{ code: 'class A { set a(v){} }', options: accessorOptions },
 		{ code: 'class A { get a(){} b(){} }', options: accessorOptions },
+
+		{ code: 'class A { get a(){} }', options: accessorEitherOptions },
+		{ code: 'class A { get a(){} set a(v){} }', options: accessorEitherOptions },
+		{ code: 'class A { set a(v){} }', options: accessorEitherOptions },
+		{ code: 'class A { get a(){} b(){} }', options: accessorEitherOptions },
+
+		{ code: 'class A { get a(){} }', options: accessorNeitherOptions },
+		{ code: 'class A { get a(){} set a(v){} }', options: accessorNeitherOptions },
+		{ code: 'class A { set a(v){} }', options: accessorNeitherOptions },
+		{ code: 'class A { b(){} get a(){} }', options: accessorNeitherOptions },
 		{
 			code: 'class A { get a(){} set a(v){} }',
 			options: [{ order: ['everything-else'], accessorPairPositioning: 'getThenSet' }],
