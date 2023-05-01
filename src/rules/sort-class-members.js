@@ -433,15 +433,17 @@ const comparers = [
 	{ property: 'override', value: 10, test: (m, s) => s.override == m.override },
 	{ property: 'readonly', value: 10, test: (m, s) => s.readonly == m.readonly },
 	{
-		property: 'kind', value: 10, test: (m, s) => {
+		property: 'kind',
+		value: 10,
+		test: (m, s) => {
 			if (s.kind === 'accessor') {
-				return isAccessor(m)
+				return isAccessor(m);
 			} else if (s.kind === 'nonAccessor') {
-				return !isAccessor(m)
+				return !isAccessor(m);
 			} else {
-				return s.kind === m.kind
+				return s.kind === m.kind;
 			}
-		}
+		},
 	},
 	{
 		property: 'groupByDecorator',
