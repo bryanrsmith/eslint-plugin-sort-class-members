@@ -151,6 +151,15 @@ const noDecoratorOptions = [
 	}
 ]
 
+const decoratorRegexpOptions = [
+	{
+		order: ['before', '[decorator-starts-with-ab]', 'after', '[everything-else]'],
+		groups: {
+			'decorator-starts-with-ab': [{ groupByDecorator: '/ab.+/' }],
+		},
+	},
+];
+
 const decoratorOptionsAlphabetical = [
 	{
 		order: ['[observables]', '[properties]'],
@@ -337,6 +346,12 @@ ruleTester.run('sort-class-members', rule, {
 				code: 'class A { private bar = 2; public foo = 3; static x = 55; constructor(){}; }',
 				options: noDecoratorOptions,
 			},
+			// regexp decorators
+			{ code: 'class A { before(){} @abc() x = 4; after(){} }', options: decoratorRegexpOptions },
+			{
+				code: 'class A { before(){} @something @abc() x = 4; after(){} xyz(){} }',
+				options: decoratorRegexpOptions,
+			}
 		]),
 
 		// regexp names

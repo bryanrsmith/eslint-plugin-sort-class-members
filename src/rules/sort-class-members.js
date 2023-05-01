@@ -441,7 +441,8 @@ const comparers = [
 				const hasDecorators = m.decorators.length > 0
 				return (s.groupByDecorator && hasDecorators) || (!s.groupByDecorator && !hasDecorators)
 			} else {
-				return m.decorators.includes(s.groupByDecorator)
+				const comparer = getStringComparer(s.groupByDecorator);
+				return m.decorators.some((decorator) => comparer(decorator));
 			}
 		},
 	},
