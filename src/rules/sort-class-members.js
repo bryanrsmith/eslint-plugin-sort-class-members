@@ -436,12 +436,14 @@ const comparers = [
 	{
 		property: 'groupByDecorator',
 		value: 10,
-		test: (m, s) => m.decorators.includes(s.groupByDecorator),
-	},
-	{
-		property: 'noDecorator',
-		value: 11,
-		test: (m, s) => (m.decorators.length === 0) === s.noDecorator,
+		test: (m, s) => {
+			if (typeof s.groupByDecorator === 'boolean') {
+				const hasDecorators = m.decorators.length > 0
+				return (s.groupByDecorator && hasDecorators) || (!s.groupByDecorator && !hasDecorators)
+			} else {
+				return m.decorators.includes(s.groupByDecorator)
+			}
+		},
 	},
 	{
 		property: 'accessorPair',
