@@ -451,7 +451,7 @@ const comparers = [
 		test: (m, s) => {
 			if (typeof s.groupByDecorator === 'boolean') {
 				const hasDecorators = m.decorators.length > 0;
-				return s.groupByDecorator  === hasDecorators;
+				return s.groupByDecorator === hasDecorators;
 			} else {
 				const comparer = getStringComparer(s.groupByDecorator);
 				return m.decorators.some((decorator) => comparer(decorator));
