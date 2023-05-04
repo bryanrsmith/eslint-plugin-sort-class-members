@@ -160,8 +160,8 @@ const noDecoratorOptions = [
 		groups: {
 			'no-decorators': [{ decorator: false }],
 		},
-	}
-]
+	},
+];
 
 const decoratorRegexpOptions = [
 	{
@@ -363,7 +363,7 @@ ruleTester.run('sort-class-members', rule, {
 			{
 				code: 'class A { before(){} @something @abc() x = 4; after(){} xyz(){} }',
 				options: decoratorRegexpOptions,
-			}
+			},
 		]),
 
 		// regexp names
