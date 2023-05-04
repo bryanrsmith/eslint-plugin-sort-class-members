@@ -158,7 +158,7 @@ const noDecoratorOptions = [
 	{
 		order: ['[no-decorators]', 'constructor'],
 		groups: {
-			'no-decorators': [{ decorator: false }],
+			'no-decorators': [{ groupByDecorator: false }],
 		},
 	},
 ];
