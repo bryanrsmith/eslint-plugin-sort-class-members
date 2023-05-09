@@ -449,8 +449,13 @@ const comparers = [
 		property: 'groupByDecorator',
 		value: 10,
 		test: (m, s) => {
-			const comparer = getStringComparer(s.groupByDecorator);
-			return m.decorators.some((decorator) => comparer(decorator));
+			if (typeof s.groupByDecorator === 'boolean') {
+				const hasDecorators = m.decorators.length > 0;
+				return s.groupByDecorator === hasDecorators;
+			} else {
+				const comparer = getStringComparer(s.groupByDecorator);
+				return m.decorators.some((decorator) => comparer(decorator));
+			}
 		},
 	},
 	{
@@ -461,7 +466,7 @@ const comparers = [
 	},
 	{
 		property: 'propertyType',
-		value: 11,
+		value: 12,
 		test: (m, s) => m.type === 'property' && s.propertyType === m.propertyType,
 	},
 ];

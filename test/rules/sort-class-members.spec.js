@@ -154,6 +154,16 @@ const decoratorOptions = [
 	},
 ];
 
+const decoratorBooleanOptions = [
+	{
+		order: ['[no-decorators]', 'constructor'],
+		groups: {
+			'no-decorators': [{ groupByDecorator: false }],
+			'any-decorator': [{ groupByDecorator: true }],
+		},
+	},
+];
+
 const decoratorRegexpOptions = [
 	{
 		order: ['before', '[decorator-starts-with-ab]', 'after', '[everything-else]'],
@@ -344,6 +354,11 @@ ruleTester.run('sort-class-members', rule, {
 				options: decoratorOptions,
 			},
 
+			// class properties without or without decorators regardless of the name
+			{
+				code: 'class A { bar = 2; foo = 3; static x = 55; constructor(){}; @dec something(){};}',
+				options: decoratorBooleanOptions,
+			},
 			// regexp decorators
 			{ code: 'class A { before(){} @abc() x = 4; after(){} }', options: decoratorRegexpOptions },
 			{

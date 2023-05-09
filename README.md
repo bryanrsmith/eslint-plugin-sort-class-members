@@ -110,7 +110,7 @@ Members can be matched to positional slots using several criteria, including nam
 - `readonly`: `true|false` to restrict the match to members with typescript `readonly` keyword.
 - `async`: `true|false` to restrict the match to async members.
 - `sort`: `"alphabetical"|"none"`. Used to require a specific sorting within the slot for matched members. Defaults to `"none"`.
-- `groupByDecorator`: a string used to group properties with the same decorator name (e.g. `observable` for `@observable`). Can be used together with `sort`. If the string starts and ends with `/` it will be interpreted as a regular expression. E.g., `"/_.+/"` will match members that have a decorator that starts with an underscore. **Note**: Decorators are a Stage 2 proposal and require a custom parser like [babel-eslint](https://github.com/babel/babel-eslint).
+- `groupByDecorator`: `string|true|false`. A boolean used to indicate whether a property/method should have a decorator or a string used to group properties/methods with the same decorator name (e.g. `observable` for `@observable`). If the string starts and ends with `/` it will be interpreted as a regular expression. E.g., `"/_.+/"` will match members that have a decorator that starts with an underscore. Can be used together with `sort`. **Note**: Decorators are a Stage 2 proposal and require a custom parser like [babel-eslint](https://github.com/babel/babel-eslint).
 
 A few examples:
 

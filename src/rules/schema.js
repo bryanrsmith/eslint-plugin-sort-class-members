@@ -30,7 +30,7 @@ export const sortClassMembersSchema = [
 							type: 'object',
 							properties: {
 								name: { type: 'string' },
-								groupByDecorator: { type: 'string' },
+								groupByDecorator: { oneOf: [{ type: 'string' }, { type: 'boolean' }] },
 								type: { enum: ['method', 'property'] },
 								kind: { enum: ['get', 'set', 'accessor', 'nonAccessor'] },
 								propertyType: { type: 'string' },
