@@ -13,6 +13,9 @@ export const sortClassMembersSchema = [
 			stopAfterFirstProblem: {
 				type: 'boolean',
 			},
+			sortInterfaces: {
+				type: 'boolean',
+			},
 			accessorPairPositioning: {
 				enum: ['getThenSet', 'setThenGet', 'together', 'any'],
 			},
