@@ -66,6 +66,7 @@ export const sortClassMembersRule = {
 		};
 
 		rules.ClassExpression = rules.ClassDeclaration;
+		rules.TSInterfaceDeclaration = rules.ClassDeclaration;
 
 		return rules;
 	},
