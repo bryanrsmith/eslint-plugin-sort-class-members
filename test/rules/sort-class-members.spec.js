@@ -308,6 +308,27 @@ const typescriptKeywordsOptions = [
 	},
 ];
 
+const typescriptInterfaceOptions = [
+	{
+		order: ['[properties]', '[accessors]', '[non-accessors]'],
+		groups: {
+			accessors: [
+				{
+					type: 'method',
+					kind: 'accessor',
+				},
+			],
+			'non-accessors': [
+				{
+					type: 'method',
+					kind: 'nonAccessor',
+				},
+			],
+		},
+		sortInterfaces: true,
+	},
+];
+
 ruleTester.run('sort-class-members', rule, {
 	valid: [
 		{ code: 'class A {}', options: defaultOptions },
@@ -1006,6 +1027,43 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: typescriptKeywordsOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		// Interface sorting
+		{
+			code: 'interface A { get a(); b; }',
+			output: 'interface A { b; get a();  }',
+			errors: [
+				{
+					message: 'Expected property b to come before getter a.',
+					type: 'TSPropertySignature',
+				},
+			],
+			options: typescriptInterfaceOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'interface A { a(); b; }',
+			output: 'interface A { b; a();  }',
+			errors: [
+				{
+					message: 'Expected property b to come before method a.',
+					type: 'TSPropertySignature',
+				},
+			],
+			options: typescriptInterfaceOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'interface A { a(); get b(); }',
+			output: 'interface A { get b(); a();  }',
+			errors: [
+				{
+					message: 'Expected getter b to come before method a.',
+					type: 'TSMethodSignature',
+				},
+			],
+			options: typescriptInterfaceOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
 	],

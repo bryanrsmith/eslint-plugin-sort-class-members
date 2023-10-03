@@ -15,6 +15,7 @@ export const sortClassMembersRule = {
 	create: function sortClassMembersRule(context) {
 		const options = context.options[0] || {};
 		const stopAfterFirst = !!options.stopAfterFirstProblem;
+		const sortInterfaces = !!options.sortInterfaces;
 		const accessorPairPositioning = options.accessorPairPositioning || 'getThenSet';
 		const order = options.order || [];
 		const groups = { ...builtInGroups, ...options.groups };
@@ -66,6 +67,9 @@ export const sortClassMembersRule = {
 		};
 
 		rules.ClassExpression = rules.ClassDeclaration;
+		if (sortInterfaces) {
+			rules.TSInterfaceDeclaration = rules.ClassDeclaration;
+		}
 
 		return rules;
 	},
@@ -193,7 +197,8 @@ function getMemberInfo(node, sourceCode) {
 		node.type === 'ClassPrivateProperty' ||
 		node.type === 'PropertyDefinition' ||
 		node.type === 'PrivateIdentifier' ||
-		node.type === 'TSAbstractPropertyDefinition'
+		node.type === 'TSAbstractPropertyDefinition' ||
+		node.type === 'TSPropertySignature'
 	) {
 		type = 'property';
 
