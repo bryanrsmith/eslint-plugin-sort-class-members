@@ -42,6 +42,28 @@ Add `sort-class-members` to the plugins section of your `.eslintrc` configuratio
 }
 ```
 
+Or, using ESLint's [Flat Config](https://eslint.org/docs/latest/use/configure/configuration-files-new) (`eslint.config.js`):
+
+```js
+import sortClassMembers from "eslint-plugin-sort-class-members";
+
+export default [
+	// Use the default configuration shown above.
+	sortClassMembers.configs["flat/recommended"],
+
+	rules: {
+		// Customize specific configuration properties
+		"sort-class-members/sort-class-members": [
+			2,
+			{
+				"accessorPairPositioning": "together",
+				"stopAfterFirstProblem": true
+			}
+		]
+  }
+];
+```
+
 When using the default configuration (shown above), the following patterns are considered problems:
 
 ```js
