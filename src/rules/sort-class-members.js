@@ -209,7 +209,12 @@ function getMemberInfo(node, sourceCode) {
 			name = second && second.type === 'Identifier' ? second.value : first.value;
 		}
 
-		propertyType = node.value ? node.value.type : node.value;
+		if (node.typeAnnotation) {
+			propertyType = node.typeAnnotation.typeAnnotation.type;
+			console.log(propertyType);
+		} else {
+			propertyType = node.value ? node.value.type : node.value;
+		}
 	} else {
 		if (node.computed) {
 			const keyBeforeToken = sourceCode.getTokenBefore(node.key);

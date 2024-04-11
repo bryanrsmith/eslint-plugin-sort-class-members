@@ -142,6 +142,25 @@ const propertyTypeOptions = [
 		],
 	},
 ];
+const typescriptPropertyTypeOptions = [
+	{
+		order: [
+			{ type: 'property', propertyType: 'TSLiteralType' },
+			{ type: 'property', propertyType: 'TSFunctionType' },
+			'[everything-else]',
+		],
+	},
+];
+const typescriptInterfacePropertyTypeOptions = [
+	{
+		order: [
+			{ type: 'property', propertyType: 'TSLiteralType' },
+			{ type: 'property', propertyType: 'TSFunctionType' },
+			'[everything-else]',
+		],
+		sortInterfaces: true
+	},
+];
 
 const decoratorOptions = [
 	{
@@ -462,6 +481,11 @@ ruleTester.run('sort-class-members', rule, {
 
 		// TS accessibility
 		{
+			code: 'class A { foo: 1; bar: () => 2 }',
+			options: typescriptPropertyTypeOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
 			code: 'class { private a: any; constructor(){} b(){} }',
 			options: typescriptAccessibilityOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
@@ -480,7 +504,7 @@ ruleTester.run('sort-class-members', rule, {
 			code: 'abstract class Foo<T> { protected abstract readonly _foo: T; public readonly bar: string; protected constructor(bar: string) {}}',
 			options: [{ order: ['[properties]', 'constructor', '[methods]'] }],
 			parser: require.resolve('@typescript-eslint/parser'),
-		},
+		}
 	],
 	invalid: [
 		{
@@ -1066,7 +1090,19 @@ ruleTester.run('sort-class-members', rule, {
 			options: typescriptInterfaceOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
-	],
+		{
+			code: 'interface A { bar: () => 2; foo: 1; }',
+			output: 'interface A { foo: 1; bar: () => 2;  }',
+			errors: [
+				{
+					message: 'Expected property foo to come before property bar.',
+					type: 'TSPropertySignature',
+				}
+			],
+			options: typescriptInterfacePropertyTypeOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		}
+	]
 });
 
 function withCustomParsers(ruleOrRules) {
