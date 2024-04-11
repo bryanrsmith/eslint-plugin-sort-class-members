@@ -211,7 +211,6 @@ function getMemberInfo(node, sourceCode) {
 
 		if (node.typeAnnotation) {
 			propertyType = node.typeAnnotation.typeAnnotation.type;
-			console.log(propertyType);
 		} else {
 			propertyType = node.value ? node.value.type : node.value;
 		}
