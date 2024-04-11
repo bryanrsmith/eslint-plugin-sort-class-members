@@ -158,7 +158,7 @@ const typescriptInterfacePropertyTypeOptions = [
 			{ type: 'property', propertyType: 'TSFunctionType' },
 			'[everything-else]',
 		],
-		sortInterfaces: true
+		sortInterfaces: true,
 	},
 ];
 
@@ -504,7 +504,7 @@ ruleTester.run('sort-class-members', rule, {
 			code: 'abstract class Foo<T> { protected abstract readonly _foo: T; public readonly bar: string; protected constructor(bar: string) {}}',
 			options: [{ order: ['[properties]', 'constructor', '[methods]'] }],
 			parser: require.resolve('@typescript-eslint/parser'),
-		}
+		},
 	],
 	invalid: [
 		{
@@ -1097,12 +1097,12 @@ ruleTester.run('sort-class-members', rule, {
 				{
 					message: 'Expected property foo to come before property bar.',
 					type: 'TSPropertySignature',
-				}
+				},
 			],
 			options: typescriptInterfacePropertyTypeOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
-		}
-	]
+		},
+	],
 });
 
 function withCustomParsers(ruleOrRules) {
