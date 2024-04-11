@@ -101,6 +101,7 @@ The rule accepts the following configuration properties:
 - `accessorPairPositioning`: Used to specify the required positioning of get/set pairs. Available values: `getThenSet`, `setThenGet`, `together`, `any`.
 - `stopAfterFirstProblem`: Only report the first sort problem in each class (plus the number of problems found). Useful if you only want to know that the class has sort problems without spamming error messages. The default is `false`.
 - `locale`: Used to specify the locale for the name comparison method. The default is `en-US`.
+- `sortInterfaces`: Used to specify whether to sort TypeScript interfaces as well. The default is `false`.
 
 ```js
 {
