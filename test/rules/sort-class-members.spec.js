@@ -142,6 +142,25 @@ const propertyTypeOptions = [
 		],
 	},
 ];
+const typescriptPropertyTypeOptions = [
+	{
+		order: [
+			{ type: 'property', propertyType: 'TSLiteralType' },
+			{ type: 'property', propertyType: 'TSFunctionType' },
+			'[everything-else]',
+		],
+	},
+];
+const typescriptInterfacePropertyTypeOptions = [
+	{
+		order: [
+			{ type: 'property', propertyType: 'TSLiteralType' },
+			{ type: 'property', propertyType: 'TSFunctionType' },
+			'[everything-else]',
+		],
+		sortInterfaces: true,
+	},
+];
 
 const decoratorOptions = [
 	{
@@ -461,6 +480,11 @@ ruleTester.run('sort-class-members', rule, {
 		{ code: 'class { [k: string]: any; }', parser: require.resolve('@typescript-eslint/parser') },
 
 		// TS accessibility
+		{
+			code: 'class A { foo: 1; bar: () => 2 }',
+			options: typescriptPropertyTypeOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
 		{
 			code: 'class { private a: any; constructor(){} b(){} }',
 			options: typescriptAccessibilityOptions,
@@ -1064,6 +1088,18 @@ ruleTester.run('sort-class-members', rule, {
 				},
 			],
 			options: typescriptInterfaceOptions,
+			parser: require.resolve('@typescript-eslint/parser'),
+		},
+		{
+			code: 'interface A { bar: () => 2; foo: 1; }',
+			output: 'interface A { foo: 1; bar: () => 2;  }',
+			errors: [
+				{
+					message: 'Expected property foo to come before property bar.',
+					type: 'TSPropertySignature',
+				},
+			],
+			options: typescriptInterfacePropertyTypeOptions,
 			parser: require.resolve('@typescript-eslint/parser'),
 		},
 	],
