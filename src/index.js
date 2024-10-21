@@ -34,7 +34,7 @@ plugin.configs.recommended = {
 };
 
 plugin.configs['flat/recommended'] = {
-	name: 'sort-class-members/flat/recommended'
+	name: 'sort-class-members/flat/recommended',
 	plugins: { 'sort-class-members': plugin },
 	rules,
 };
