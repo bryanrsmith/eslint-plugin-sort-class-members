@@ -25,7 +25,8 @@ export const sortClassMembersRule = {
 
 		const rules = {
 			ClassDeclaration(node) {
-				let members = getClassMemberInfos(node, context.getSourceCode(), orderedSlots);
+				const sourceCode = context.sourceCode ?? context.getSourceCode();
+				let members = getClassMemberInfos(node, sourceCode, orderedSlots);
 
 				// check for out-of-order and separated get/set pairs
 				const accessorPairProblems = findAccessorPairProblems(members, accessorPairPositioning);
@@ -105,7 +106,7 @@ function reportProblem({
 			if (expected !== 'before') {
 				return fixes; // after almost never occurs, and when it does it causes conflicts
 			}
-			const sourceCode = context.getSourceCode();
+			const sourceCode = context.sourceCode ?? context.getSourceCode();
 			const sourceAfterToken = sourceCode.getTokenAfter(source.node);
 
 			const sourceJSDoc = sourceCode.getCommentsBefore(source.node).slice(-1).pop();
